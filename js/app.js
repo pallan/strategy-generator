@@ -218,35 +218,55 @@ HouseScenario.prototype.generate = function(config=null) {
 }
 
 window.addEventListener('load', function() {
-  if (localStorage.getItem("savedScenarios") !== null) {
-    s = JSON.parse(localStorage.getItem("savedScenarios"));
-    for(let x=0; x < s.length; x++) { 
-      let textnode = document.createTextNode(s[x].description);
-      let node = document.createElement("LI");
-      node.classList.add("list-group-item");
-      node.classList.add("load-saved");
-      node.setAttribute('data-index', x);
-      node.appendChild(textnode);
-      document.getElementById("saved-scenario-list").appendChild(node);
-      console.log(s[x]) 
-    }
-  }
-
-  var classname = document.getElementsByClassName("load-saved");
-  var loadScenario = function() {
-    let scenarios = JSON.parse(localStorage.getItem("savedScenarios"))
-    console.log(scenarios[this.getAttribute('data-index')]);
-    house.generate(scenarios[this.getAttribute('data-index')]);
+  let appendSavedScenario = function(list, index, description) {
+    let textnode = document.createTextNode(description);
+    let node = document.createElement("BUTTON");
+    node.setAttribute('type', 'button');
+    node.className += "list-group-item list-group-item-action load-saved";
+    node.setAttribute('data-index', index);
+    node.appendChild(textnode);
+    list.appendChild(node);
   };
-  for (var i = 0; i < classname.length; i++) {
-    classname[i].addEventListener('click', loadScenario, false);
+
+  let loadSavedList = function() {
+    let scenarioList = document.getElementById("saved-scenario-list")
+    while (scenarioList.firstChild) {
+      scenarioList.removeChild(scenarioList.firstChild);
+    }
+
+    if (localStorage.getItem("savedScenarios") !== null) {
+      s = JSON.parse(localStorage.getItem("savedScenarios"));
+      for(let x=0; x < s.length; x++) { 
+        appendSavedScenario(scenarioList, x, s[x].description)
+      }
+    }
+
+    let classname = document.getElementsByClassName("load-saved");
+    let loadScenario = function() {
+      let scenarios = JSON.parse(localStorage.getItem("savedScenarios"))
+      house.generate(scenarios[this.getAttribute('data-index')]);
+      for (let i = 0; i < classname.length; i++) {
+        classname[i].classList.remove('active');
+      }
+      this.className += " active";
+    };
+    for (let i = 0; i < classname.length; i++) {
+      classname[i].addEventListener('click', loadScenario, false);
+    }
   }
 
   document.getElementById('scenario-config-form').addEventListener('submit', function(evt){
     evt.preventDefault()
     let field = JSON.parse(document.getElementById('scenario_config').value);
     house.generate(field);
-  })
+  });
+
+  document.getElementById('clear-saved').addEventListener('click', function(evt){
+    if (confirm("Remove all saved scenarios? They cannot be recovered!")) {
+      localStorage.removeItem("savedScenarios");
+      loadSavedList();
+    }
+  });
 
   document.getElementById('save-button').addEventListener('click', function(evt){
     console.log('Saving to local storage')
@@ -264,8 +284,10 @@ window.addEventListener('load', function() {
       scenarios.push(field_value);
     }
     localStorage.setItem("savedScenarios", JSON.stringify(scenarios));
+    loadSavedList();
   })
 
+  loadSavedList();
   house = new HouseScenario(40, "houseCanvas")
   house.generate();
 })
