@@ -39,13 +39,18 @@ function refreshHouse()
 }
 
 let house = {
-  pixels_per_foot: 40,
-  get stone_radius() { return (this.pixels_per_foot * 0.48) },
-  get width() { return (this.pixels_per_foot * 30) },
-  get height() { return (this.pixels_per_foot * 14) },
+  // pixels/foot
+  scale: 40, 
+  get stone_radius() { return (this.scale * 0.48) },
+  get width() { return (this.scale * 30) },
+  get height() { return (this.scale * 14) },
   canvas: document.getElementById("houseCanvas"),
   context: document.getElementById("houseCanvas").getContext("2d"),
-  coordinates: new Array,
+  scenarioConfig: {
+    coordinates: new Array,
+    description: "", 
+    scale: 40,
+  },
   
   initialize: function() {
     this.canvas.width = this.width;
@@ -62,13 +67,13 @@ let house = {
 
   drawHouse: function() {
     let origin    = {x: (this.canvas.height / 2), y: (this.canvas.height / 2)},
-        back_line = (origin.x - (6 * this.pixels_per_foot)),
-        hog_line  = (origin.x + (21 * this.pixels_per_foot));
+        back_line = (origin.x - (6 * this.scale)),
+        hog_line  = (origin.x + (21 * this.scale));
 
-    this.drawCircle(origin, (6 * this.pixels_per_foot), 'blue');  // Twelve foot
-    this.drawCircle(origin, (4 * this.pixels_per_foot)); // Eight foot
-    this.drawCircle(origin, (2 * this.pixels_per_foot), 'red'); // Four foot
-    this.drawCircle(origin, (0.5 * this.pixels_per_foot)); // Button
+    this.drawCircle(origin, (6 * this.scale), 'blue');  // Twelve foot
+    this.drawCircle(origin, (4 * this.scale)); // Eight foot
+    this.drawCircle(origin, (2 * this.scale), 'red'); // Four foot
+    this.drawCircle(origin, (0.5 * this.scale)); // Button
 
     // Centre line
     this.context.beginPath();
@@ -108,8 +113,8 @@ let house = {
   overlappingStones: function(pos) {
     let newStone = {radius: this.stone_radius, x: pos.x, y: pos.y};
 
-    for(i=0; i < this.coordinates.length; i++) {
-      let stone = {radius: this.stone_radius, x: this.coordinates[i].x, y: this.coordinates[i].y};
+    for(i=0; i < this.scenarioConfig.coordinates.length; i++) {
+      let stone = {radius: this.stone_radius, x: this.scenarioConfig.coordinates[i].x, y: this.scenarioConfig.coordinates[i].y};
       let dx = newStone.x - stone.x;
       let dy = newStone.y - stone.y;
       let distance = Math.sqrt(dx * dx + dy * dy);
@@ -123,15 +128,15 @@ let house = {
   
   generateStonePos: function(colour) {
     let origin    = {x: (this.canvas.height / 2), y: (this.canvas.height / 2)},
-        back_line = (origin.x - (6 * this.pixels_per_foot) - this.stone_radius),
-        hog_line  = (origin.x + (21 * this.pixels_per_foot) - this.stone_radius);
+        back_line = (origin.x - (6 * this.scale) - this.stone_radius),
+        hog_line  = (origin.x + (21 * this.scale) - this.stone_radius);
 
     let list = ['zone4', 'zone3', 'zone2', 'zone1'];
     let weight = [0.3, 0.4, 0.22, 0.08];
     let elements = {
-      "zone1": {min: (origin.x + (12 * this.pixels_per_foot)), max: hog_line},
-      "zone2": {min: (origin.x + (6 * this.pixels_per_foot)), max: (origin.x + (12 * this.pixels_per_foot))},
-      "zone3": {min: origin.x, max: (origin.x + (6 * this.pixels_per_foot))},
+      "zone1": {min: (origin.x + (12 * this.scale)), max: hog_line},
+      "zone2": {min: (origin.x + (6 * this.scale)), max: (origin.x + (12 * this.scale))},
+      "zone3": {min: origin.x, max: (origin.x + (6 * this.scale))},
       "zone4": {min: back_line, max: origin.x},
     }
     let zone = elements[getRandomItem(list, weight)]
@@ -147,7 +152,7 @@ let house = {
 
     if (getRandomInt(1,100) > 50) {
       this.drawStone(pos, colour);
-      this.coordinates.push(pos)
+      this.scenarioConfig.coordinates.push(pos)
     }
   },
   
@@ -163,11 +168,11 @@ let house = {
 
     score_diff =  (score_diff == 0 ? 'Tied' : `${up_down} ${score_diff}`);
 
-    let scenario = `${your_colour}, ${end} end ${hammer} hammer, ${player} ${stone}, ${score_diff}`
+    this.scenarioConfig.description = `${your_colour}, ${end} end ${hammer} hammer, ${player} ${stone}, ${score_diff}`
     this.context.fillStyle = 'black';
     this.context.font = '16px sans-serif';
     this.context.textAlign = "center";
-    this.context.fillText(scenario, (this.width / 2), (this.height - 10));
+    this.context.fillText(this.scenarioConfig.description, (this.width / 2), (this.height - 10));
   },
   
   generate: function() {
@@ -175,7 +180,8 @@ let house = {
     this.context.lineWidth = 2;
     this.drawHouse();
 
-    this.coordinates = new Array;
+    this.scenarioConfig.scale = this.scale;
+    this.scenarioConfig.coordinates = new Array;
     for(i=1; i < 9; i++) {
       this.generateStonePos('red');
       this.generateStonePos('yellow');
@@ -183,7 +189,7 @@ let house = {
 
     this.randomScenario();
     let dump = document.getElementById("dump");
-    dump.innerText = JSON.stringify(this.coordinates, null, 2);
+    dump.innerText = JSON.stringify(this.scenarioConfig, null, 2);
   }
 }
 
