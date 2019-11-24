@@ -46,7 +46,7 @@ function HouseScenario(scale, canvasId) {
   this.scenarioConfig = {
     coordinates: [],
     description: "",
-    // scale: 40,
+    scale: scale,
   };
   this.defaultCanvasValues = {
     lineWidth: scale < 40 ? 1 : 2,
@@ -192,7 +192,7 @@ HouseScenario.prototype.generate = function(config=null) {
     this.scenarioConfig = {
       coordinates: [],
       description: this.randomScenario(),
-      // scale: this.scale,
+      scale: this.scale,
     }
 
     // Generate the stone positions
@@ -294,6 +294,6 @@ window.addEventListener('load', function() {
   })
 
   loadSavedList();
-  house = new HouseScenario(30, "houseCanvas")
+  house = new HouseScenario(40, "houseCanvas")
   house.generate();
 })
