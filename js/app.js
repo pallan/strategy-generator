@@ -39,6 +39,7 @@ function refreshHouse()
 }
 
 function HouseScenario(scale, canvasId) {
+  this.debug = false;
   this.scale = scale;
   this.stone_radius = (this.scale * 0.48);
   this.width = (scale * 14);
@@ -184,10 +185,10 @@ HouseScenario.prototype.generate = function(config=null) {
   this.resetHouse();
 
   if (config) {
-    console.log("Generating house using supplied config")
+    if (this.debug) { console.log("Generating house using supplied config") }
     this.scenarioConfig = config;
   } else {
-    console.log("Generating house using randomly generated config")
+    if (this.debug) { console.log("Generating house using randomly generated config") }
     let stone_colours = ['red', 'yellow'];
     this.scenarioConfig = {
       coordinates: [],
@@ -275,7 +276,7 @@ window.addEventListener('load', function() {
   });
 
   document.getElementById('save-button').addEventListener('click', function(evt){
-    console.log('Saving to local storage')
+    if (this.debug) { console.log('Saving to local storage') }
     let field_value = JSON.parse(document.getElementById('scenario_config').value);
     let scenarios = localStorage.getItem("savedScenarios")
 
