@@ -39,6 +39,8 @@
       }
 
       #houseCanvas { border:2px solid #000000; }
+
+      #advanced-config { display:none; }
     </style>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   </head>
@@ -56,16 +58,21 @@
         <canvas id="houseCanvas"></canvas>
     </div>
     <div class="col-md">
-      <h4>Scenario Configuration</h4>
-      <form id="scenario-config-form">
-        <div class="form-group">
-          <textarea class="form-control" id="scenario_config" rows="8"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>  <button id="save-button" type="button" class="btn btn-info">Save</button> <button type="button" class="btn btn-danger" onclick="refreshHouse()">Regenerate House</button>
-      </form>
       <h4>Saved Scenarios</h4>
       <div class="list-group" id="saved-scenario-list"></div>
       <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
+
+      <h4>Scenario Management</h4>
+      <p><button id="save-button" type="button" class="btn btn-info">Save</button> <button type="button" class="btn btn-danger" onclick="refreshHouse()">Regenerate House</button></p>
+      <p><a href="#" id="toggle-advanced">Advanced Configuation</a></p>
+      <div id="advanced-config">
+        <form id="scenario-config-form">
+          <div class="form-group">
+            <textarea class="form-control" id="scenario_config" rows="8"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
     </div>
     <div class="col-md">
 <h4>How it Works</h4>

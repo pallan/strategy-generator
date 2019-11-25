@@ -279,6 +279,15 @@ window.addEventListener('load', function() {
     }
   });
 
+  document.getElementById('toggle-advanced').addEventListener('click', function(evt){
+    let advancedForm = document.getElementById('advanced-config');
+    if (advancedForm.style.display === "none") {
+      advancedForm.style.display = "block";
+    } else {
+      advancedForm.style.display = "none";
+    }
+  });
+
   document.getElementById('save-button').addEventListener('click', function(evt){
     if (this.debug) { console.log('Saving to local storage') }
     let field_value = JSON.parse(document.getElementById('scenario_config').value);
