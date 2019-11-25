@@ -50,9 +50,10 @@
 </nav>
 
 <main role="main" class="container-fluid">
-  <canvas id="houseCanvas"></canvas>
-  <p></p>
   <div class="row">
+    <div class="col-md">
+        <canvas id="houseCanvas"></canvas>
+    </div>
     <div class="col-md">
       <h4>Scenario Configuration</h4>
       <form id="scenario-config-form">
@@ -64,8 +65,8 @@
     </div>
     <div class="col-md">
       <h4>Saved Scenarios</h4>
-      <ul class="list-group" id="saved-scenario-list">
-      </ul>
+      <div class="list-group" id="saved-scenario-list"></div>
+      <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
     </div>
   </div>
 </main><!-- /.container -->
