@@ -63,12 +63,16 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>  <button id="save-button" type="button" class="btn btn-info">Save</button> <button type="button" class="btn btn-danger" onclick="refreshHouse()">Regenerate House</button>
       </form>
-      <h4>How it Works</h4>
+      <h4>Saved Scenarios</h4>
+      <div class="list-group" id="saved-scenario-list"></div>
+      <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
+    </div>
+    <div class="col-md">
+<h4>How it Works</h4>
 
 <p>This page generates a curling house with stones in play to create in-game 
-  scenarios for teams or skips to discuss their strategy for that end.</p>
-
-<p>The following details how each part of the scenario is generated,</p>
+  scenarios for teams or skips to discuss their strategy for that end. The 
+  following details how each part of the scenario is generated.</p>
 
 <dl>
   <dt>End</dt>
@@ -91,11 +95,8 @@
 
 <h5>Stone Placement</h5>
 
-<p>Basically the stones are placed in the play area randomly using a weighted distribution. 
-  The system checks to ensure none of them are out of play (touching boards, hogged or through) 
-or overlapping with another stone.</p>
-
-<p>What is a weighted distribution? The play area has been divided into four 'zones' with each
+<p>The stones are placed in the play area randomly using a weighted distribution. 
+  What is a weighted distribution? The play area has been divided into four 'zones' with each
   one being assigned a weight to affect the probability that zone will be selected by the 
   randomizer. The zones and probabilities are detailed below.</p>
 
@@ -131,11 +132,8 @@ or overlapping with another stone.</p>
   </tbody>
 </table>
 
-    </div>
-    <div class="col-md">
-      <h4>Saved Scenarios</h4>
-      <div class="list-group" id="saved-scenario-list"></div>
-      <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
+<p>Additionally to prevent all stones from being in play, the randomizer gives each stone
+a 50% chance of staying in play. Stones that 'fail' this test are removed.</p>
     </div>
   </div>
 </main><!-- /.container -->
