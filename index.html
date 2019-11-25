@@ -63,6 +63,74 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>  <button id="save-button" type="button" class="btn btn-info">Save</button> <button type="button" class="btn btn-danger" onclick="refreshHouse()">Regenerate House</button>
       </form>
+      <h4>How it Works</h4>
+
+<p>This page generates a curling house with stones in play to create in-game 
+  scenarios for teams or skips to discuss their strategy for that end.</p>
+
+<p>The following details how each part of the scenario is generated,</p>
+
+<dl>
+  <dt>End</dt>
+  <dd>Randomly selected from 1st to 10th</dd>
+  <dt>Stone Colour</dt>
+  <dd>Randomly selected from 'Red' or 'Yellow'</dd>
+  <dt>Position Throwing</dt>
+  <dd>Number of stones already thrown is randomly selected between 3 and 15. The
+    position is calculated based on this. For example, if 11 stones have been thrown
+    then the next stone is the twelveth or the team with hammer third's second stone.
+  </dd>
+  <dt>Hammer</dt>
+  <dd>Similar to position, it is based on stones already thrown. If the next stone to 
+    come is an odd stone, the team does not have hammer. If the next stone to come is
+    an even stone, the tead has hammer.    
+  </dd>
+  <dt>Score Differential</dt>
+  <dd>Randomly selected between 0 (tied) and 6. "Up" or "Down" is randomly selected.</dd>
+</dl>
+
+<h5>Stone Placement</h5>
+
+<p>Basically the stones are placed in the play area randomly using a weighted distribution. 
+  The system checks to ensure none of them are out of play (touching boards, hogged or through) 
+or overlapping with another stone.</p>
+
+<p>What is a weighted distribution? The play area has been divided into four 'zones' with each
+  one being assigned a weight to affect the probability that zone will be selected by the 
+  randomizer. The zones and probabilities are detailed below.</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Zone</th>
+      <th>Location</th>
+      <th>Probabilty</th>
+    </tr>        
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Hogline to 9ft past hogline</td>
+      <td>8%</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>9ft past to Top of House</td>
+      <td>22%</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Top of House to T-Line/td>
+      <td>40%</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>T-Line to Back Line</td>
+      <td>30%</td>
+    </tr>
+  </tbody>
+</table>
+
     </div>
     <div class="col-md">
       <h4>Saved Scenarios</h4>
