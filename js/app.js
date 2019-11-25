@@ -164,7 +164,7 @@ HouseScenario.prototype.randomScenario = function() {
       score_diff = Math.floor(Math.random()*6);
 
   score_diff = (score_diff == 0 ? 'Tied' : `${up_down} ${score_diff}`);
-  return `${your_colour}, ${end} end ${hammer} hammer, ${player} ${stone}, ${score_diff}`
+  return `${your_colour}, ${end} end ${hammer} hammer, ${player} ${stone.toLowerCase()}, ${score_diff}`
 },
 
 HouseScenario.prototype.drawScenarioText = function(description) {
