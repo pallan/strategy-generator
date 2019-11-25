@@ -166,7 +166,7 @@ HouseScenario.prototype.randomScenario = function(stonesThrown = 15) {
 
   if (this.debug) { console.log(`Next Stone: ${nextStone}; Position ${Math.ceil(nextStone/2)-1} : ${positions[Math.ceil(nextStone/2)-1]}`) }
 
-  score_diff = (score_diff == 0 ? 'Tied' : `${up_down} ${score_diff}`);
+  score_diff = (score_diff == 0 || end == '1st' ? 'Tied' : `${up_down} ${score_diff}`);
   return `${your_colour}, ${end} end ${hammer} hammer, ${positions[Math.ceil(nextStone/2)-1]}, ${score_diff}`
 },
 
