@@ -22,7 +22,7 @@ let getRandomItem = function(list, weight) {
     weight_sum = +weight_sum.toFixed(2);
      
     if (random_num <= weight_sum) {
-        return list[i];
+      return list[i];
     }
   }
 };
@@ -154,18 +154,20 @@ HouseScenario.prototype.generateStonePos = function() {
   }
 },
 
-HouseScenario.prototype.randomScenario = function() {
-  let labels = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'],
+HouseScenario.prototype.randomScenario = function(stonesThrown = 15) {
+  let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
+      positions = ["Lead's first","Lead's second","Second's first","Second's second","Third's first","Third's second","Skip's first","Skip's second"],
       end = sample(labels),
-      player = sample(["Lead's", "Second's", "Third's", "Skip's"]),
-      stone = sample(labels, 2),
-      hammer = sample(['with', 'without']),
+      hammer = (stonesThrown % 2 == 0 ? 'without' : 'with'),
       your_colour = sample(['Red','Yellow']),
       up_down = sample(['Up', 'Down']),
-      score_diff = Math.floor(Math.random()*6);
+      score_diff = Math.floor(Math.random()*6),
+      nextStone = stonesThrown + 1;
+
+  if (this.debug) { console.log(`Next Stone: ${nextStone}; Position ${Math.ceil(nextStone/2)-1} : ${positions[Math.ceil(nextStone/2)-1]}`) }
 
   score_diff = (score_diff == 0 ? 'Tied' : `${up_down} ${score_diff}`);
-  return `${your_colour}, ${end} end ${hammer} hammer, ${player} ${stone.toLowerCase()}, ${score_diff}`
+  return `${your_colour}, ${end} end ${hammer} hammer, ${positions[Math.ceil(nextStone/2)-1]}, ${score_diff}`
 },
 
 HouseScenario.prototype.drawScenarioText = function(description) {
@@ -190,14 +192,16 @@ HouseScenario.prototype.generate = function(config=null) {
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
     let stone_colours = ['red', 'yellow'];
+    let stones_thrown = getRandomInt(3,15); // all stones thrown
+    if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
-      description: this.randomScenario(),
+      description: this.randomScenario(stones_thrown),
       scale: this.scale,
     }
 
     // Generate the stone positions
-    for(let x=1; x < 17; x++) {
+    for(let x=0; x < stones_thrown; x++) {
       do {
         pos = this.generateStonePos();
       } while (this.overlappingStones(pos, this.scenarioConfig.coordinates));
