@@ -87,7 +87,7 @@ HouseScenario.prototype.drawHouse = function() {
 
   // T-line
   this.context.beginPath();
-  this.context.moveTo(origin.x, 0);
+  this.context.moveTo(origin.x, back_line);
   this.context.lineTo(origin.x, this.canvas.height);
   this.context.stroke();
 
@@ -172,7 +172,7 @@ HouseScenario.prototype.drawScenarioText = function(description) {
   this.context.fillStyle = 'black';
   this.context.font = '16px sans-serif';
   this.context.textAlign = "center";
-  this.context.fillText(description, (this.width / 2), (this.height - 10));
+  this.context.fillText(description, (this.width / 2), 20);
 }
 
 HouseScenario.prototype.resetHouse = function() {
