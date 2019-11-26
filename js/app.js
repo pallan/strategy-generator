@@ -112,7 +112,7 @@ HouseScenario.prototype.drawStone = function(pos, colour, num) {
   this.drawCircle(pos, (this.stone_radius * 0.7), colour);
   this.context.lineWidth = this.defaultCanvasValues.lineWidth;
   if (num !== undefined) {
-    this.context.fillStyle = 'black';
+    this.context.fillStyle = (colour == 'Yellow' ? 'black' : 'white');
     this.context.font = '18px serif';
     this.context.textAlign = "center";
     this.context.fillText(num, pos.x, pos.y+5);
@@ -160,12 +160,12 @@ HouseScenario.prototype.generateStonePos = function() {
   }
 },
 
-HouseScenario.prototype.randomScenario = function(stonesThrown = 15) {
+HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
   let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
       positions = ["Lead's first","Lead's second","Second's first","Second's second","Third's first","Third's second","Skip's first","Skip's second"],
       end = sample(labels),
       hammer = (stonesThrown % 2 == 0 ? 'without' : 'with'),
-      your_colour = sample(['Red','Yellow']),
+      your_colour = sample(colours),
       up_down = sample(['Up', 'Down']),
       score_diff = Math.floor(Math.random()*6),
       nextStone = stonesThrown + 1;
@@ -195,18 +195,23 @@ HouseScenario.prototype.resetHouse = function() {
 HouseScenario.prototype.generate = function(config=null) {
   this.resetHouse();
 
+  let colourSelect = document.getElementById('stoneColours');
+  let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
+
   if (config) {
     if (this.debug) { console.log("Generating house using supplied config") }
     this.scenarioConfig = config;
+    this.scenarioConfig.stone_colours = stone_colours
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
-    let stone_colours = ['red', 'yellow'];
+    
     let stones_thrown = getRandomInt(3,15); // all stones thrown
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
-      description: this.randomScenario(stones_thrown),
+      description: this.randomScenario(stone_colours, stones_thrown),
       scale: this.scale,
+      stone_colours: stone_colours,
     }
 
     // Generate the stone positions
@@ -217,7 +222,7 @@ HouseScenario.prototype.generate = function(config=null) {
 
       // randomly give each stone a 50% chance of being in play
       if (getRandomInt(1,100) > 45) {
-        this.scenarioConfig.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour: stone_colours[(x % 2)] });
+        this.scenarioConfig.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour_index: (x % 2) });
       }
     }
   }
@@ -226,7 +231,7 @@ HouseScenario.prototype.generate = function(config=null) {
   // Draw the stone positions
   for(let x=0; x < this.scenarioConfig.coordinates.length; x++) {
     let stone = this.scenarioConfig.coordinates[x];
-    this.drawStone(stone.origin, stone.colour, stone.num);
+    this.drawStone(stone.origin, this.scenarioConfig.stone_colours[stone.colour_index], stone.num);
   }
 
   // Draw the scenario text
