@@ -106,11 +106,17 @@ HouseScenario.prototype.drawHouse = function() {
   this.context.lineWidth = this.defaultCanvasValues.lineWidth;
 },
 
-HouseScenario.prototype.drawStone = function(pos, colour) {
+HouseScenario.prototype.drawStone = function(pos, colour, num) {
   this.context.lineWidth = 0.5;
   this.drawCircle(pos, this.stone_radius, 'grey');
   this.drawCircle(pos, (this.stone_radius * 0.7), colour);
   this.context.lineWidth = this.defaultCanvasValues.lineWidth;
+  if (num !== undefined) {
+    this.context.fillStyle = 'black';
+    this.context.font = '18px serif';
+    this.context.textAlign = "center";
+    this.context.fillText(num, pos.x, pos.y+5);
+  }
 },
 
 HouseScenario.prototype.overlappingStones = function(pos, existing) {
@@ -208,7 +214,7 @@ HouseScenario.prototype.generate = function(config=null) {
 
       // randomly give each stone a 50% chance of being in play
       if (getRandomInt(1,100) > 50) {
-        this.scenarioConfig.coordinates.push({ origin: pos, colour: stone_colours[(x % 2)] });
+        this.scenarioConfig.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour: stone_colours[(x % 2)] });
       }
     }
   }
@@ -217,7 +223,7 @@ HouseScenario.prototype.generate = function(config=null) {
   // Draw the stone positions
   for(let x=0; x < this.scenarioConfig.coordinates.length; x++) {
     let stone = this.scenarioConfig.coordinates[x];
-    this.drawStone(stone.origin, stone.colour);
+    this.drawStone(stone.origin, stone.colour, stone.num);
   }
 
   // Draw the scenario text
