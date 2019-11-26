@@ -202,7 +202,7 @@ HouseScenario.prototype.generate = function(config=null) {
 
   let zones = [];
   Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
-    zones.push({ name: element.name, weight: parseInt(element.value) })
+    zones.push({ name: element.name, weight: parseInt(element.value) / 100 })
   });
   zones.sort((a,b) => (a.weight > b.weight) ? 1 : -1).reverse();
 
