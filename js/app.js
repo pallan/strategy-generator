@@ -194,9 +194,11 @@ HouseScenario.prototype.resetHouse = function() {
 HouseScenario.prototype.generate = function(config=null) {
   this.resetHouse();
 
-  let configForm = document.getElementById("scenario-config-form");
+  let configForm = document.getElementById("advancedConfigForm");
   let colourSelect = configForm.elements.namedItem('stoneColours');
   let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
+  let minStonesSelect = configForm.elements.namedItem('minThrown');
+  let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
 
   let zones = [];
   Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
@@ -211,7 +213,7 @@ HouseScenario.prototype.generate = function(config=null) {
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
     
-    let stones_thrown = getRandomInt(3,15); // all stones thrown
+    let stones_thrown = getRandomInt(minStones,15); // all stones thrown
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
@@ -288,7 +290,7 @@ window.addEventListener('load', function() {
     }
   }
 
-  document.getElementById('scenario-config-form').addEventListener('submit', function(evt){
+  document.getElementById('rawJSONConfigForm').addEventListener('submit', function(evt){
     evt.preventDefault()
     let field = JSON.parse(document.getElementById('scenario_config').value);
     house.generate(field);
