@@ -135,13 +135,13 @@ HouseScenario.prototype.overlappingStones = function(pos, existing) {
   return false;
 },
 
-HouseScenario.prototype.fetchZone = function() {
+HouseScenario.prototype.fetchZone = function(zones) {
   let origin    = {x: (this.canvas.width / 2), y: (this.canvas.width / 2)},
       back_line = (origin.y - (6 * this.scale) - this.stone_radius),
       hog_line  = (origin.y + (21 * this.scale) - this.stone_radius);
 
-  let list = ['zone4', 'zone3', 'zone2', 'zone1'];
-  let weight = [0.3, 0.4, 0.22, 0.08];
+  let list = zones.map(function(e) { return e.name });
+  let weight = zones.map(function(e) { return e.weight });
   let elements = {
     "zone1": {min: (origin.y + (12 * this.scale)), max: hog_line},
     "zone2": {min: (origin.y + (6 * this.scale)), max: (origin.y + (12 * this.scale))},
@@ -152,8 +152,7 @@ HouseScenario.prototype.fetchZone = function() {
   return elements[getRandomItem(list, weight)]
 };
 
-HouseScenario.prototype.generateStonePos = function() {
-  zone = this.fetchZone();
+HouseScenario.prototype.generateStonePos = function(zone) {
   return {
     y: getRandomInt(zone.min, zone.max),
     x: getRandomInt(this.stone_radius, (this.canvas.width - this.stone_radius)),
@@ -195,8 +194,15 @@ HouseScenario.prototype.resetHouse = function() {
 HouseScenario.prototype.generate = function(config=null) {
   this.resetHouse();
 
-  let colourSelect = document.getElementById('stoneColours');
+  let configForm = document.getElementById("scenario-config-form");
+  let colourSelect = configForm.elements.namedItem('stoneColours');
   let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
+
+  let zones = [];
+  Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
+    zones.push({ name: element.name, weight: parseInt(element.value) })
+  });
+  zones.sort((a,b) => (a.weight > b.weight) ? 1 : -1).reverse();
 
   if (config) {
     if (this.debug) { console.log("Generating house using supplied config") }
@@ -212,12 +218,14 @@ HouseScenario.prototype.generate = function(config=null) {
       description: this.randomScenario(stone_colours, stones_thrown),
       scale: this.scale,
       stone_colours: stone_colours,
+      zone_weights: zones,
     }
 
     // Generate the stone positions
     for(let x=0; x < stones_thrown; x++) {
+      zone = this.fetchZone(zones);
       do {
-        pos = this.generateStonePos();
+        pos = this.generateStonePos(zone);
       } while (this.overlappingStones(pos, this.scenarioConfig.coordinates));
 
       // randomly give each stone a 50% chance of being in play
