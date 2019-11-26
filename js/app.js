@@ -213,7 +213,7 @@ HouseScenario.prototype.generate = function(config=null) {
       } while (this.overlappingStones(pos, this.scenarioConfig.coordinates));
 
       // randomly give each stone a 50% chance of being in play
-      if (getRandomInt(1,100) > 50) {
+      if (getRandomInt(1,100) > 45) {
         this.scenarioConfig.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour: stone_colours[(x % 2)] });
       }
     }
@@ -312,6 +312,8 @@ window.addEventListener('load', function() {
     localStorage.setItem("savedScenarios", JSON.stringify(scenarios));
     loadSavedList();
   })
+
+  document.getElementById('advanced-config').style.display = "none";
 
   loadSavedList();
   house = new HouseScenario(40, "houseCanvas")
