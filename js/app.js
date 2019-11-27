@@ -154,7 +154,7 @@ HouseScenario.prototype.generateStonePos = function(zone) {
 
 HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
   let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
-      positions = ["Lead's first","Lead's second","Second's first","Second's second","Third's first","Third's second","Skip's first","Skip's second"],
+      positions = ["Lead's first","Lead's last","Second's first","Second's last","Third's first","Third's last","Skip's first","Skip's last"],
       end = sample(labels),
       hammer = (stonesThrown % 2 == 0 ? 'without' : 'with'),
       your_colour = sample(colours),
@@ -187,25 +187,37 @@ HouseScenario.prototype.resetHouse = function() {
 HouseScenario.prototype.generate = function(config=null) {
   this.resetHouse();
 
-  let configForm = document.getElementById("advancedConfigForm");
+  let configForm = document.getElementById("configForm");
   let colourSelect = configForm.elements.namedItem('stoneColours');
-  let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
   let minStonesSelect = configForm.elements.namedItem('minThrown');
-  let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
-
-  let zones = [];
-  Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
-    zones.push({ name: element.name, weight: parseInt(element.value) / 100 })
-  });
-  zones.sort((a,b) => (a.weight > b.weight) ? 1 : -1).reverse();
 
   if (config) {
     if (this.debug) { console.log("Generating house using supplied config") }
     this.scenarioConfig = config;
-    this.scenarioConfig.stone_colours = stone_colours
+    
+    // Update the form with the config values?
+    colourSelect.value = this.scenarioConfig.stone_colours.join(" / ")
+    for (let field of document.getElementsByClassName("zoneInput")) {
+      for(let x=0; x < this.scenarioConfig.zone_weights.length; x++) {
+        if (field.name == this.scenarioConfig.zone_weights[x].name) {
+          field.value = this.scenarioConfig.zone_weights[x].weight * 100
+        }
+      }
+    }
+
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
     
+    // Pull the config from the form
+    let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
+    let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
+
+    let zones = [];
+    Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
+      zones.push({ name: element.name, weight: parseInt(element.value) / 100 })
+    });
+    zones.sort((a,b) => (a.weight > b.weight) ? 1 : -1).reverse();
+
     let stones_thrown = getRandomInt(minStones,15); // all stones thrown
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
@@ -244,6 +256,7 @@ HouseScenario.prototype.generate = function(config=null) {
   // Dump the config to screen (for debugging)
   let dump = document.getElementById("scenario_config");
   dump.value = JSON.stringify(this.scenarioConfig, null, 2);
+  console.log(this.scenarioConfig)
 }
 
 // Manage the Saved Scenario List
@@ -285,9 +298,19 @@ const loadSavedList = function() {
   }
 }
 
-
 // Page load initializations
 window.addEventListener('load', function() {
+
+  document.getElementById('configForm').addEventListener('submit', function(evt){
+    evt.preventDefault()
+    let field = JSON.parse(document.getElementById('scenario_config').value);
+    refreshHouse();
+  });
+
+  document.getElementById('toggle-advanced').addEventListener('click', function(evt){
+    let advancedForm = document.getElementById('advanced-config');
+    advancedForm.style.display = advancedForm.style.display == "block" ? "none" : "block";
+  });
 
   document.getElementById('rawJSONConfigForm').addEventListener('submit', function(evt){
     evt.preventDefault()
@@ -300,11 +323,6 @@ window.addEventListener('load', function() {
       localStorage.removeItem("savedScenarios");
       loadSavedList();
     }
-  });
-
-  document.getElementById('toggle-advanced').addEventListener('click', function(evt){
-    let advancedForm = document.getElementById('advanced-config');
-    advancedForm.style.display = advancedForm.style.display == "block" ? "none" : "block";
   });
 
   document.getElementById('save-button').addEventListener('click', function(evt){
