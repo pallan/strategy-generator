@@ -63,10 +63,13 @@
     </div>
     <div class="col-md">
       <h4>Scenario Management</h4>
-      <p><button id="save-button" type="button" class="btn btn-info">Save</button> <button type="button" class="btn btn-danger" onclick="refreshHouse()">Regenerate House</button></p>
-      <p><a href="#" id="toggle-advanced">Advanced Configuation</a></p>
-      <div id="advanced-config">
-        <form id="advancedConfigForm">
+      <form id="configForm">
+        <div class="form-group">
+          <textarea class="form-control" id="scenarioNotes" rows="4" placeholder="Describe what you would do here..."></textarea>
+        </div>
+        <p><button id="save-button" type="button" class="btn btn-info">Save</button> <button type="submit" class="btn btn-primary">Regenerate House</button></p>
+        <p><a href="#" id="toggle-advanced">Advanced Configuation</a></p>
+        <div id="advanced-config">
           <div class="row">
             <div class="col">
               <div class="form-group">
@@ -128,19 +131,20 @@
               </div>
             </div>
           </div>
-        </form>
-        <div style="display:none">
-          <form id="rawJSONConfigForm">
-            <div class="form-group">
-              <textarea class="form-control" id="scenario_config" rows="8"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Manual Update</button>
-          </form>
         </div>
-      </div>
+      </form>
       <h4>Saved Scenarios</h4>
       <div class="list-group" id="saved-scenario-list"></div>
       <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
+
+      <div style="display:none">
+        <form id="rawJSONConfigForm">
+          <div class="form-group">
+            <textarea class="form-control" id="scenario_config" rows="8"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Manual Update</button>
+        </form>
+      </div>
     </div>
     <div class="col-md">
 <h4>How it Works</h4>
