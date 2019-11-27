@@ -189,7 +189,8 @@ HouseScenario.prototype.generate = function(config=null) {
 
   let configForm = document.getElementById("configForm");
   let colourSelect = configForm.elements.namedItem('stoneColours');
-  let minStonesSelect = configForm.elements.namedItem('minThrown');
+  let notes = configForm.elements.namedItem('scenarioNotes');
+  let zoneFields = document.getElementsByClassName("zoneInput");
 
   if (config) {
     if (this.debug) { console.log("Generating house using supplied config") }
@@ -197,23 +198,27 @@ HouseScenario.prototype.generate = function(config=null) {
     
     // Update the form with the config values?
     colourSelect.value = this.scenarioConfig.stone_colours.join(" / ")
-    for (let field of document.getElementsByClassName("zoneInput")) {
+    for (let field of zoneFields) {
       for(let x=0; x < this.scenarioConfig.zone_weights.length; x++) {
         if (field.name == this.scenarioConfig.zone_weights[x].name) {
           field.value = this.scenarioConfig.zone_weights[x].weight * 100
         }
       }
     }
-
+    notes.value = null;
+    if (this.scenarioConfig.notes) notes.value = this.scenarioConfig.notes
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
     
     // Pull the config from the form
     let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
+
+    let minStonesSelect = configForm.elements.namedItem('minThrown');
     let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
+    console.log(notes.value)
 
     let zones = [];
-    Array.prototype.forEach.call(document.getElementsByClassName("zoneInput"), function(element) {
+    Array.prototype.forEach.call(zoneFields, function(element) {
       zones.push({ name: element.name, weight: parseInt(element.value) / 100 })
     });
     zones.sort((a,b) => (a.weight > b.weight) ? 1 : -1).reverse();
@@ -226,7 +231,10 @@ HouseScenario.prototype.generate = function(config=null) {
       scale: this.scale,
       stone_colours: stone_colours,
       zone_weights: zones,
+      notes: ''
     }
+
+    notes.value = null;
 
     // Generate the stone positions
     for(let x=0; x < stones_thrown; x++) {
@@ -252,11 +260,11 @@ HouseScenario.prototype.generate = function(config=null) {
 
   // Draw the scenario text
   this.drawScenarioText(this.scenarioConfig.description)
-  
+
+  // New scnario clear the notes  
   // Dump the config to screen (for debugging)
   let dump = document.getElementById("scenario_config");
   dump.value = JSON.stringify(this.scenarioConfig, null, 2);
-  console.log(this.scenarioConfig)
 }
 
 // Manage the Saved Scenario List
@@ -329,6 +337,12 @@ window.addEventListener('load', function() {
     if (this.debug) { console.log('Saving to local storage') }
     let field_value = JSON.parse(document.getElementById('scenario_config').value);
     let scenarios = localStorage.getItem("savedScenarios")
+
+    let configForm = document.getElementById("configForm");
+    let notes = configForm.elements.namedItem('scenarioNotes');
+
+    if (notes.value) { field_value.notes = notes.value }
+    console.log(field_value.notes);
 
     if (scenarios === null) {
       scenarios = [field_value]
