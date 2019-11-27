@@ -1,3 +1,4 @@
+"use strict";
 
 const sample = (a, range=null) => {
   if (!Array.isArray(a)) return ''
@@ -5,14 +6,12 @@ const sample = (a, range=null) => {
   return a[Math.floor(Math.random()*range)]
 }
 
-let rand = function(min, max) {
-  return Math.random() * (max - min) + min;
-};
- 
-let getRandomItem = function(list, weight) {
-  let total_weight = weight.reduce(function (prev, cur, i, arr) {
-    return prev + cur;
-  });
+const rand = (min, max) => Math.random() * (max - min) + min;
+
+const getRandomInt = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
+
+const getRandomItem = function(list, weight) {
+  let total_weight = weight.reduce((prev, cur, i, arr) => prev + cur );
    
   let random_num = rand(0, total_weight);
   let weight_sum = 0;
@@ -27,15 +26,9 @@ let getRandomItem = function(list, weight) {
   }
 };
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function refreshHouse()
-{
-  house.generate();
+const refreshHouse = function(config= null) {
+  let house = new HouseScenario(40, "houseCanvas")
+  house.generate(config);
 }
 
 function HouseScenario(scale, canvasId) {
@@ -225,7 +218,8 @@ HouseScenario.prototype.generate = function(config=null) {
 
     // Generate the stone positions
     for(let x=0; x < stones_thrown; x++) {
-      zone = this.fetchZone(zones);
+      let zone = this.fetchZone(zones),
+          pos;
       do {
         pos = this.generateStonePos(zone);
       } while (this.overlappingStones(pos, this.scenarioConfig.coordinates));
@@ -252,48 +246,53 @@ HouseScenario.prototype.generate = function(config=null) {
   dump.value = JSON.stringify(this.scenarioConfig, null, 2);
 }
 
-window.addEventListener('load', function() {
-  let appendSavedScenario = function(list, index, description) {
-    let textnode = document.createTextNode(description);
-    let node = document.createElement("BUTTON");
-    node.setAttribute('type', 'button');
-    node.className += "list-group-item list-group-item-action load-saved";
-    node.setAttribute('data-index', index);
-    node.appendChild(textnode);
-    list.appendChild(node);
-  };
+// Manage the Saved Scenario List
+const scenarioListItemNode = function(index, description) {
+  let textnode = document.createTextNode(description);
+  let node = document.createElement("BUTTON");
+  node.setAttribute('type', 'button');
+  node.className += "list-group-item list-group-item-action";
+  node.setAttribute('data-index', index);
+  node.appendChild(textnode);
+  return node;
+};
 
-  let loadSavedList = function() {
-    let scenarioList = document.getElementById("saved-scenario-list")
-    while (scenarioList.firstChild) {
-      scenarioList.removeChild(scenarioList.firstChild);
-    }
+const loadScenario = function(index) {
+  let scenarios = JSON.parse(localStorage.getItem("savedScenarios"))
+  refreshHouse(scenarios[index]);
+};
 
-    if (localStorage.getItem("savedScenarios") !== null) {
-      s = JSON.parse(localStorage.getItem("savedScenarios"));
-      for(let x=0; x < s.length; x++) { 
-        appendSavedScenario(scenarioList, x, s[x].description)
-      }
-    }
+const loadSavedList = function() {
+  let scenarioList = document.getElementById("saved-scenario-list")
+  while (scenarioList.firstChild) {
+    scenarioList.removeChild(scenarioList.firstChild);
+  }
 
-    let classname = document.getElementsByClassName("load-saved");
-    let loadScenario = function() {
-      let scenarios = JSON.parse(localStorage.getItem("savedScenarios"))
-      house.generate(scenarios[this.getAttribute('data-index')]);
-      for (let i = 0; i < classname.length; i++) {
-        classname[i].classList.remove('active');
-      }
-      this.className += " active";
-    };
-    for (let i = 0; i < classname.length; i++) {
-      classname[i].addEventListener('click', loadScenario, false);
+  if (localStorage.getItem("savedScenarios") !== null) {
+    let scenarios = JSON.parse(localStorage.getItem("savedScenarios"));
+    for(let x=0; x < scenarios.length; x++) { 
+      let listItem = scenarioListItemNode(x, scenarios[x].description);
+      scenarioList.appendChild(listItem);
+
+      listItem.addEventListener('click', function(evt){
+        loadScenario(this.getAttribute('data-index'))
+        for (let item of this.parentNode.children) {
+          item.classList.remove('active');
+        }
+        this.className += " active";
+      });
     }
   }
+}
+
+
+// Page load initializations
+window.addEventListener('load', function() {
 
   document.getElementById('rawJSONConfigForm').addEventListener('submit', function(evt){
     evt.preventDefault()
     let field = JSON.parse(document.getElementById('scenario_config').value);
-    house.generate(field);
+    refreshHouse(field);
   });
 
   document.getElementById('clear-saved').addEventListener('click', function(evt){
@@ -305,11 +304,7 @@ window.addEventListener('load', function() {
 
   document.getElementById('toggle-advanced').addEventListener('click', function(evt){
     let advancedForm = document.getElementById('advanced-config');
-    if (advancedForm.style.display === "none") {
-      advancedForm.style.display = "block";
-    } else {
-      advancedForm.style.display = "none";
-    }
+    advancedForm.style.display = advancedForm.style.display == "block" ? "none" : "block";
   });
 
   document.getElementById('save-button').addEventListener('click', function(evt){
@@ -331,9 +326,6 @@ window.addEventListener('load', function() {
     loadSavedList();
   })
 
-  document.getElementById('advanced-config').style.display = "none";
-
   loadSavedList();
-  house = new HouseScenario(40, "houseCanvas")
-  house.generate();
+  refreshHouse();
 })
