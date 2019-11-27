@@ -147,37 +147,52 @@
       </div>
     </div>
     <div class="col-md">
-<h4>How it Works</h4>
+<h4>Welcome!</h4>
 
 <p>This page generates a curling house with stones in play to create in-game 
-  scenarios for teams or skips to discuss their strategy for that end. The 
-  following details how each part of the scenario is generated.</p>
+  scenarios for teams or skips to discuss their strategy for that end. 
+
+<h5>Saving Scenarios</h5>
+
+<p>If you like a scenario you can enter notes about it, for example how you or your team
+  would handle it, and click the 'Save' button. This will keep a copy of the scenario with
+  your notes in <strong>your current browser only</strong>. If you leave and return to the 
+  site on the same computer and browser the saved scenarios will appear. If you use a different
+  browser, on your phone for example, the scenarios will likely not appear. You can remove 
+saved scenarios by clicking the 'Clear' button or clearing your browsing data.</p>
+
+
+<h5>How it Works</h5>
+<p>Below are the details about how each part of a scenario is generated.</p>
 
 <dl>
   <dt>End</dt>
   <dd>Randomly selected from 1st to 10th</dd>
   <dt>Stone Colour</dt>
-  <dd>Randomly selected from 'Red' or 'Yellow'</dd>
+  <dd>Randomly selected from selected colours (check out Advanced Configuration)</dd>
   <dt>Position Throwing</dt>
-  <dd>Number of stones already thrown is randomly selected between 3 and 15. The
-    position is calculated based on this. For example, if 11 stones have been thrown
-    then the next stone is the twelveth or the team with hammer third's second stone.
+  <dd>Number of stones already thrown is randomly selected between 3 and 15 (see 'Min. Stones
+    Thrown' in the Advanced Configuration). The position is calculated based on this. For 
+    example, if 11 stones have been thrown then the next stone is the twelveth or the team 
+    with hammer third's second stone.
   </dd>
   <dt>Hammer</dt>
-  <dd>Similar to position, it is based on stones already thrown. If the next stone to 
-    come is an odd stone, the team does not have hammer. If the next stone to come is
-    an even stone, the tead has hammer.    
+  <dd>Based on stones already thrown. If the next stone to come is an odd stone, the team 
+    does not have hammer. If the next stone to come is an even stone, the tead has hammer.
   </dd>
   <dt>Score Differential</dt>
-  <dd>Randomly selected between 0 (tied) and 6. "Up" or "Down" is randomly selected.</dd>
+  <dd>Randomly selected between 0 (tied) and 6. "Up" or "Down" is randomly selected
+    except for the first end when its always tied.
+  </dd>
 </dl>
 
 <h5>Stone Placement</h5>
 
-<p>The stones are placed in the play area randomly using a weighted distribution. 
-  What is a weighted distribution? The play area has been divided into four 'zones' with each
-  one being assigned a weight to affect the probability that zone will be selected by the 
-  randomizer. The zones and probabilities are detailed below.</p>
+<p>The stones are placed in the play area randomly using a weighted distribution. The play 
+  area has been divided into four 'zones' with each one being assigned a weight to affect 
+  the probability that zone will be selected by the randomizer. The zones and default 
+  probabilities are detailed below. The weights can be configured in the 'Advanced 
+  Configuration' area.</p>
 
 <table class="table">
   <thead>
@@ -185,7 +200,7 @@
       <th>Zone</th>
       <th>Location</th>
       <th>Probabilty</th>
-    </tr>        
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -212,7 +227,8 @@
 </table>
 
 <p>Additionally to prevent all stones from being in play, the randomizer gives each stone
-a 50% chance of staying in play. Stones that 'fail' this test are removed.</p>
+a 45% chance of staying in play. Stones that 'fail' this test are removed.</p>
+
     </div>
   </div>
 </main><!-- /.container -->
