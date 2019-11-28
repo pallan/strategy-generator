@@ -26,89 +26,99 @@ const getRandomItem = function(list, weight) {
   }
 };
 
-const refreshHouse = function(config= null) {
-  let house = new HouseScenario(40, "houseCanvas")
-  house.generate(config);
+const refreshHouse = function(config=null) {
+  let house = new HouseScenario("houseCanvas", config)
+  house.generate();
 }
 
-function HouseScenario(scale, canvasId) {
-  this.debug = false;
-  this.scale = scale;
-  this.stone_radius = (this.scale * 0.48);
-  this.width = (scale * 14);
-  this.height = (scale * 30);
-  this.scenarioConfig = {
-    coordinates: [],
+function HouseScenario(canvasID, conf=null) {
+  let defaults ={ 
+    scale: 30,
     description: "",
-    scale: scale,
-  };
-  this.defaultCanvasValues = {
-    lineWidth: scale < 40 ? 1 : 2,
+    coordinates: [],
+    notes: "",
+    stone_colours: ['Red', 'Yellow'],
   }
 
+  this.canvasID = canvasID
+  this.conf = Object.assign({}, defaults, conf);
+
+  this.debug = false;
+  this.stone_radius = (this.conf.scale * 0.48);
+  this.width        = (this.conf.scale * 14);
+  this.height       = (this.conf.scale * 30);
+
   // configure the canvas
-  this.canvas = document.getElementById(canvasId);
-  this.canvas.width = this.width;
-  this.canvas.height = this.height;
-  this.context = document.getElementById(canvasId).getContext("2d");
-  this.context.lineWidth = this.defaultCanvasValues.lineWidth;
+  this.canvas = {
+    element: document.getElementById(this.canvasID),
+    context: document.getElementById(this.canvasID).getContext("2d"),
+    conf: {
+      origin: {
+        x: (this.width / 2),
+        y: (this.width / 2)
+      },
+      back_line: ((this.width / 2) - (6 * this.conf.scale)),
+      hog_line: ((this.width / 2) + (21 * this.conf.scale)),
+    },
+    get width() { return this.element.width },
+    get height(){ return this.element.height },
+  };
+  this.canvas.element.width     = this.width;
+  this.canvas.element.height    = this.height;
+  this.canvas.context.lineWidth = this.conf.scale < 40 ? 1 : 2;
 }
 
 HouseScenario.prototype.drawCircle = function(origin, radius, colour="white") {
-  this.context.beginPath();
-  this.context.arc(origin.x, origin.y, radius, 0, 2 * Math.PI);
-  this.context.fillStyle = colour;
-  this.context.fill();
-  this.context.stroke();
+  this.canvas.context.beginPath();
+  this.canvas.context.arc(origin.x, origin.y, radius, 0, 2 * Math.PI);
+  this.canvas.context.fillStyle = colour;
+  this.canvas.context.fill();
+  this.canvas.context.stroke();
 },
 
 HouseScenario.prototype.drawHouse = function() {
-  let origin    = {x: (this.canvas.width / 2), y: (this.canvas.width / 2)},
-      back_line = (origin.y - (6 * this.scale)),
-      hog_line  = (origin.y + (21 * this.scale));
-
-  this.drawCircle(origin, (6 * this.scale), 'blue');  // Twelve foot
-  this.drawCircle(origin, (4 * this.scale)); // Eight foot
-  this.drawCircle(origin, (2 * this.scale), 'red'); // Four foot
-  this.drawCircle(origin, (0.5 * this.scale)); // Button
+  this.drawCircle(this.canvas.conf.origin, (6 * this.conf.scale), 'blue');  // Twelve foot
+  this.drawCircle(this.canvas.conf.origin, (4 * this.conf.scale)); // Eight foot
+  this.drawCircle(this.canvas.conf.origin, (2 * this.conf.scale), 'red'); // Four foot
+  this.drawCircle(this.canvas.conf.origin, (0.5 * this.conf.scale)); // Button
 
   // Centre line
-  this.context.beginPath();
-  this.context.moveTo(0, origin.y);
-  this.context.lineTo(this.canvas.width, origin.y);
-  this.context.stroke();
+  this.canvas.context.beginPath();
+  this.canvas.context.moveTo(0, this.canvas.conf.origin.y);
+  this.canvas.context.lineTo(this.canvas.width, this.canvas.conf.origin.y);
+  this.canvas.context.stroke();
 
   // T-line
-  this.context.beginPath();
-  this.context.moveTo(origin.x, back_line);
-  this.context.lineTo(origin.x, this.canvas.height);
-  this.context.stroke();
+  this.canvas.context.beginPath();
+  this.canvas.context.moveTo(this.canvas.conf.origin.x, this.canvas.conf.back_line);
+  this.canvas.context.lineTo(this.canvas.conf.origin.x, this.canvas.height);
+  this.canvas.context.stroke();
 
   // Backline
-  this.context.beginPath();
-  this.context.moveTo(0, back_line);
-  this.context.lineTo(this.canvas.width, back_line);
-  this.context.stroke();
+  this.canvas.context.beginPath();
+  this.canvas.context.moveTo(0, this.canvas.conf.back_line);
+  this.canvas.context.lineTo(this.canvas.width, this.canvas.conf.back_line);
+  this.canvas.context.stroke();
 
   // Hogline
-  this.context.beginPath();
-  this.context.moveTo(0, hog_line);
-  this.context.lineTo(this.canvas.width, hog_line);
-  this.context.lineWidth = this.defaultCanvasValues.lineWidth * 5;
-  this.context.stroke();
-  this.context.lineWidth = this.defaultCanvasValues.lineWidth;
+  this.canvas.context.beginPath();
+  this.canvas.context.moveTo(0, this.canvas.conf.hog_line);
+  this.canvas.context.lineTo(this.canvas.width, this.canvas.conf.hog_line);
+  this.canvas.context.lineWidth = this.canvas.context.lineWidth * 5;
+  this.canvas.context.stroke();
+  this.canvas.context.lineWidth = this.canvas.context.lineWidth;
 },
 
 HouseScenario.prototype.drawStone = function(pos, colour, num) {
-  this.context.lineWidth = 0.5;
+  this.canvas.context.lineWidth = 0.5;
   this.drawCircle(pos, this.stone_radius, 'grey');
   this.drawCircle(pos, (this.stone_radius * 0.7), colour);
-  this.context.lineWidth = this.defaultCanvasValues.lineWidth;
+  this.canvas.context.lineWidth = this.canvas.context.lineWidth;
   if (num !== undefined) {
-    this.context.fillStyle = (colour == 'Yellow' ? 'black' : 'white');
-    this.context.font = '18px serif';
-    this.context.textAlign = "center";
-    this.context.fillText(num, pos.x, pos.y+5);
+    this.canvas.context.fillStyle = (colour == 'Yellow' ? 'black' : 'white');
+    this.canvas.context.font = '18px serif';
+    this.canvas.context.textAlign = "center";
+    this.canvas.context.fillText(num, pos.x, pos.y+5);
   }
 },
 
@@ -129,17 +139,13 @@ HouseScenario.prototype.overlappingStones = function(pos, existing) {
 },
 
 HouseScenario.prototype.fetchZone = function(zones) {
-  let origin    = {x: (this.canvas.width / 2), y: (this.canvas.width / 2)},
-      back_line = (origin.y - (6 * this.scale) - this.stone_radius),
-      hog_line  = (origin.y + (21 * this.scale) - this.stone_radius);
-
   let list = zones.map(function(e) { return e.name });
   let weight = zones.map(function(e) { return e.weight });
   let elements = {
-    "zone1": {min: (origin.y + (12 * this.scale)), max: hog_line},
-    "zone2": {min: (origin.y + (6 * this.scale)), max: (origin.y + (12 * this.scale))},
-    "zone3": {min: origin.y, max: (origin.y + (6 * this.scale))},
-    "zone4": {min: back_line, max: origin.y},
+    "zone1": {min: (this.canvas.conf.origin.y + (12 * this.conf.scale)), max: this.canvas.conf.hog_line},
+    "zone2": {min: (this.canvas.conf.origin.y + (6 * this.conf.scale)), max: (this.canvas.conf.origin.y + (12 * this.conf.scale))},
+    "zone3": {min: this.canvas.conf.origin.y, max: (this.canvas.conf.origin.y + (6 * this.conf.scale))},
+    "zone4": {min: this.canvas.conf.back_line, max: this.canvas.conf.origin.y},
   }
   
   return elements[getRandomItem(list, weight)]
@@ -172,41 +178,39 @@ HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
 },
 
 HouseScenario.prototype.drawScenarioText = function(description) {
-  this.context.fillStyle = 'black';
-  this.context.font = '16px sans-serif';
-  this.context.textAlign = "center";
-  this.context.fillText(description, (this.width / 2), 20);
+  this.canvas.context.fillStyle = 'black';
+  this.canvas.context.font = '16px sans-serif';
+  this.canvas.context.textAlign = "center";
+  this.canvas.context.fillText(description, (this.width / 2), 20);
 }
 
 HouseScenario.prototype.resetHouse = function() {
-  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  this.context.lineWidth = this.defaultCanvasValues.lineWidth;;
+  this.canvas.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  this.canvas.context.lineWidth = this.canvas.context.lineWidth;
   this.drawHouse();
 }
 
 HouseScenario.prototype.generate = function(config=null) {
-  this.resetHouse();
-
   let configForm = document.getElementById("configForm");
   let colourSelect = configForm.elements.namedItem('stoneColours');
-  let notes = configForm.elements.namedItem('scenarioNotes');
+  let notesTextArea = configForm.elements.namedItem('scenarioNotes');
   let zoneFields = document.getElementsByClassName("zoneInput");
 
   if (config) {
     if (this.debug) { console.log("Generating house using supplied config") }
-    this.scenarioConfig = config;
+    this.conf = config;
     
     // Update the form with the config values?
-    colourSelect.value = this.scenarioConfig.stone_colours.join(" / ")
+    colourSelect.value = this.conf.stone_colours.join(" / ")
     for (let field of zoneFields) {
-      for(let x=0; x < this.scenarioConfig.zone_weights.length; x++) {
-        if (field.name == this.scenarioConfig.zone_weights[x].name) {
-          field.value = this.scenarioConfig.zone_weights[x].weight * 100
+      for(let x=0; x < this.conf.zone_weights.length; x++) {
+        if (field.name == this.conf.zone_weights[x].name) {
+          field.value = this.conf.zone_weights[x].weight * 100
         }
       }
     }
-    notes.value = null;
-    if (this.scenarioConfig.notes) notes.value = this.scenarioConfig.notes
+    notesTextArea.value = null;
+    if (this.conf.notes) notesTextArea.value = this.conf.notes
   } else {
     if (this.debug) { console.log("Generating house using randomly generated config") }
     
@@ -215,7 +219,6 @@ HouseScenario.prototype.generate = function(config=null) {
 
     let minStonesSelect = configForm.elements.namedItem('minThrown');
     let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
-    console.log(notes.value)
 
     let zones = [];
     Array.prototype.forEach.call(zoneFields, function(element) {
@@ -225,16 +228,16 @@ HouseScenario.prototype.generate = function(config=null) {
 
     let stones_thrown = getRandomInt(minStones,15); // all stones thrown
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
-    this.scenarioConfig = {
+    this.conf = {
       coordinates: [],
       description: this.randomScenario(stone_colours, stones_thrown),
-      scale: this.scale,
+      scale: this.conf.scale,
       stone_colours: stone_colours,
       zone_weights: zones,
-      notes: ''
+      notes: null,
     }
 
-    notes.value = null;
+    notesTextArea.value = null;
 
     // Generate the stone positions
     for(let x=0; x < stones_thrown; x++) {
@@ -242,29 +245,29 @@ HouseScenario.prototype.generate = function(config=null) {
           pos;
       do {
         pos = this.generateStonePos(zone);
-      } while (this.overlappingStones(pos, this.scenarioConfig.coordinates));
+      } while (this.overlappingStones(pos, this.conf.coordinates));
 
       // randomly give each stone a 50% chance of being in play
       if (getRandomInt(1,100) > 45) {
-        this.scenarioConfig.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour_index: (x % 2) });
+        this.conf.coordinates.push({ origin: pos, num: Math.ceil((x+1)/2), colour_index: (x % 2) });
       }
     }
   }
+  // Dump the config to hidden field
+  let dump = document.getElementById("scenario_config");
+  dump.value = JSON.stringify(this.conf, null, 2);
 
   // Draw the scenario
+  this.resetHouse();
+
   // Draw the stone positions
-  for(let x=0; x < this.scenarioConfig.coordinates.length; x++) {
-    let stone = this.scenarioConfig.coordinates[x];
-    this.drawStone(stone.origin, this.scenarioConfig.stone_colours[stone.colour_index], stone.num);
+  for(let x=0; x < this.conf.coordinates.length; x++) {
+    let stone = this.conf.coordinates[x];
+    this.drawStone(stone.origin, this.conf.stone_colours[stone.colour_index], stone.num);
   }
 
   // Draw the scenario text
-  this.drawScenarioText(this.scenarioConfig.description)
-
-  // New scnario clear the notes  
-  // Dump the config to screen (for debugging)
-  let dump = document.getElementById("scenario_config");
-  dump.value = JSON.stringify(this.scenarioConfig, null, 2);
+  this.drawScenarioText(this.conf.description)
 }
 
 // Manage the Saved Scenario List
