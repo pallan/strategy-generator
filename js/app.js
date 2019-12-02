@@ -27,7 +27,7 @@ const getRandomItem = function(list, weight) {
 };
 
 const refreshHouse = function(config= null) {
-  let house = new HouseScenario(40, "houseCanvas")
+  let house = new HouseScenario(30, "houseCanvas")
   house.generate(config);
 }
 
