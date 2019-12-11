@@ -152,24 +152,32 @@ HouseScenario.prototype.generateStonePos = function(zone) {
   }
 },
 
+HouseScenario.prototype.scenarioToString = function(config) {
+  return `${config.colour}, ${config.end} end ${config.hammer ? 'with' : 'without'} hammer, ${config.thrower}, ${config.score_diff}`
+}
+
 HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
   let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
       positions = ["Lead's first","Lead's last","Second's first","Second's last","Third's first","Third's last","Skip's first","Skip's last"],
-      end = sample(labels),
-      hammer = (stonesThrown % 2 == 0 ? 'without' : 'with'),
-      your_colour = sample(colours),
       up_down = sample(['Up', 'Down']),
-      score_diff = Math.floor(Math.random()*6),
-      nextStone = stonesThrown + 1;
+      nextStone = stonesThrown + 1,
+      score_diff = Math.floor(Math.random()*6);
 
-  if (this.debug) { console.log(`Next Stone: ${nextStone}; Position ${Math.ceil(nextStone/2)-1} : ${positions[Math.ceil(nextStone/2)-1]}`) }
+  let conf = {
+    end: sample(labels),
+    hammer: (stonesThrown % 2 == 0),
+    colour: sample(colours),
+    thrower: positions[Math.ceil(nextStone/2)-1],
+    score_diff: ''
+  }
 
-  if (end == "2nd" && up_down == "Up" && hammer == "with") {
+  if (conf.end == "2nd" && up_down == "Up" && conf.hammer) {
     up_down = "Down";
   }
-  score_diff = (score_diff == 0 || end == '1st' ? 'Tied' : `${up_down} ${score_diff}`);
-  return `${your_colour}, ${end} end ${hammer} hammer, ${positions[Math.ceil(nextStone/2)-1]}, ${score_diff}`
-},
+  conf.score_diff = (score_diff == 0 || conf.end == '1st' ? 'Tied' : `${up_down} ${score_diff}`);
+
+  return conf;
+}
 
 HouseScenario.prototype.drawScenarioText = function(description) {
   this.context.fillStyle = 'black';
@@ -215,7 +223,6 @@ HouseScenario.prototype.generate = function(config=null) {
 
     let minStonesSelect = configForm.elements.namedItem('minThrown');
     let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
-    console.log(notes.value)
 
     let zones = [];
     Array.prototype.forEach.call(zoneFields, function(element) {
@@ -227,7 +234,7 @@ HouseScenario.prototype.generate = function(config=null) {
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
-      description: this.randomScenario(stone_colours, stones_thrown),
+      details: this.randomScenario(stone_colours, stones_thrown),
       scale: this.scale,
       stone_colours: stone_colours,
       zone_weights: zones,
@@ -235,6 +242,10 @@ HouseScenario.prototype.generate = function(config=null) {
     }
 
     notes.value = null;
+
+    if (this.scenarioConfig.details.hammer && this.scenarioConfig.details.colour == this.scenarioConfig.stone_colours[0]) {
+      this.scenarioConfig.stone_colours.reverse();
+    }
 
     // Generate the stone positions
     for(let x=0; x < stones_thrown; x++) {
@@ -259,7 +270,11 @@ HouseScenario.prototype.generate = function(config=null) {
   }
 
   // Draw the scenario text
-  this.drawScenarioText(this.scenarioConfig.description)
+  if (this.scenarioConfig.description) {
+    this.drawScenarioText(this.scenarioConfig.description)
+  } else {
+    this.drawScenarioText(this.scenarioToString(this.scenarioConfig.details))
+  }
 
   // New scnario clear the notes  
   // Dump the config to screen (for debugging)
