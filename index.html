@@ -63,7 +63,7 @@
     </div>
     <div class="col-md">
       <h4>Scenario Management</h4>
-      <form id="configForm">
+      <form id="configForm" name="configForm">
         <div class="form-group">
           <textarea class="form-control" id="scenarioNotes" rows="4" placeholder="Describe what you would do here..."></textarea>
         </div>
@@ -85,6 +85,21 @@
               </div>
             </div>
             <div class="col">
+              <label for="stoneColour1">Ends</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfEnds" id="numOfEnds1" value="8" checked>
+                <label class="form-check-label" for="numOfEnds1">
+                  8
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfEnds" id="numOfEnds2" value="10">
+                <label class="form-check-label" for="numOfEnds2">
+                  10
+                </label>
+              </div>
+            </div>
+            <div class="col">
               <div class="form-group">
                 <label for="minThrown">Min. Stones Thrown</label>
                 <select class="form-control" id="minThrown">
@@ -103,7 +118,7 @@
                   <option>15</option>
                 </select>
               </div>
-            </div>
+            </div>          
           </div>
           <div class="row">
             <div class="col">
