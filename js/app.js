@@ -153,10 +153,11 @@ HouseScenario.prototype.generateStonePos = function(zone) {
 },
 
 HouseScenario.prototype.scenarioToString = function(config) {
-  return `${config.colour}, ${config.end} end ${config.hammer ? 'with' : 'without'} hammer, ${config.thrower}, ${config.score_diff}`
+  let ends = (config.numberOfEnds ? ` (${config.numberOfEnds} ends)` : '' );
+  return `${config.colour}, ${config.end} end ${config.hammer ? 'w/' : 'w/o '}hammer, ${config.thrower}, ${config.score_diff}${ends}`
 }
 
-HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
+HouseScenario.prototype.randomScenario = function(colours, numberOfEnds = 8, stonesThrown = 15) {
   let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
       positions = ["Lead's first","Lead's last","Second's first","Second's last","Third's first","Third's last","Skip's first","Skip's last"],
       up_down = sample(['Up', 'Down']),
@@ -164,7 +165,8 @@ HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
       score_diff = Math.floor(Math.random()*6);
 
   let conf = {
-    end: sample(labels),
+    numberOfEnds: numberOfEnds,
+    end: sample(labels, numberOfEnds),
     hammer: (stonesThrown % 2 == 0),
     colour: sample(colours),
     thrower: positions[Math.ceil(nextStone/2)-1],
@@ -181,7 +183,7 @@ HouseScenario.prototype.randomScenario = function(colours, stonesThrown = 15) {
 
 HouseScenario.prototype.drawScenarioText = function(description) {
   this.context.fillStyle = 'black';
-  this.context.font = '16px sans-serif';
+  this.context.font = '14px sans-serif';
   this.context.textAlign = "center";
   this.context.fillText(description, (this.width / 2), 20);
 }
@@ -222,7 +224,8 @@ HouseScenario.prototype.generate = function(config=null) {
     let stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
 
     let minStonesSelect = configForm.elements.namedItem('minThrown');
-    let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value
+    let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value;
+    let numberOfEnds = configForm.elements.namedItem("numOfEnds").value;
 
     let zones = [];
     Array.prototype.forEach.call(zoneFields, function(element) {
@@ -234,7 +237,7 @@ HouseScenario.prototype.generate = function(config=null) {
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
-      details: this.randomScenario(stone_colours, stones_thrown),
+      details: this.randomScenario(stone_colours, numberOfEnds, stones_thrown),
       scale: this.scale,
       stone_colours: stone_colours,
       zone_weights: zones,
