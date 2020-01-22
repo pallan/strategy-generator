@@ -157,16 +157,18 @@ HouseScenario.prototype.scenarioToString = function(config) {
   return `${config.colour}, ${config.end} end ${config.hammer ? 'w/' : 'w/o '}hammer, ${config.thrower}, ${config.score_diff}${ends}`
 }
 
-HouseScenario.prototype.randomScenario = function(colours, numberOfEnds = 8, stonesThrown = 15) {
+HouseScenario.prototype.randomScenario = function(colours, numberOfEnds = 8, stonesThrown = 15, currentEnd="") {
   let labels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
       positions = ["Lead's first","Lead's last","Second's first","Second's last","Third's first","Third's last","Skip's first","Skip's last"],
       up_down = sample(['Up', 'Down']),
       nextStone = stonesThrown + 1,
       score_diff = Math.floor(Math.random()*6);
 
+
+      console.log(currentEnd)
   let conf = {
     numberOfEnds: numberOfEnds,
-    end: sample(labels, numberOfEnds),
+    end: (currentEnd != "" ? currentEnd : sample(labels, numberOfEnds)),
     hammer: (stonesThrown % 2 == 0),
     colour: sample(colours),
     thrower: positions[Math.ceil(nextStone/2)-1],
@@ -226,6 +228,9 @@ HouseScenario.prototype.generate = function(config=null) {
     let minStonesSelect = configForm.elements.namedItem('minThrown');
     let minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value;
     let numberOfEnds = configForm.elements.namedItem("numOfEnds").value;
+    
+    let currentEndSelect = configForm.elements.namedItem("currentEnd");
+    let currentEnd = currentEndSelect.options[currentEndSelect.selectedIndex].value;
 
     let zones = [];
     Array.prototype.forEach.call(zoneFields, function(element) {
@@ -237,7 +242,7 @@ HouseScenario.prototype.generate = function(config=null) {
     if (this.debug) { console.log(`Stones Thrown ${stones_thrown}`) }
     this.scenarioConfig = {
       coordinates: [],
-      details: this.randomScenario(stone_colours, numberOfEnds, stones_thrown),
+      details: this.randomScenario(stone_colours, numberOfEnds, stones_thrown, currentEnd),
       scale: this.scale,
       stone_colours: stone_colours,
       zone_weights: zones,
