@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Eligibility Calculator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      body {
+        padding-top: 5rem;
+      }
+      .starter-template {
+        padding: 3rem 1.5rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Eligibility Calculator</a>
+    </nav>
+
+<main role="main" class="container-fluid">
+  <div class="row">
+    <div class="col-md">
+      <form id="configForm" name="configForm">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="zone1">Birthday</label>
+              <input type="text" id="birtdateField" name="birtdhate" class="form-control" value="" placeholder="dd/mm/yyy">
+            </div>
+            <textarea class="form-control" id="scenario_config" rows="8"></textarea>
+          </div>
+        </div>
+        <p><button id="updateButton" type="button" class="btn btn-info">Update</button></p>
+      </form>
+    </div>
+  </div>
+</main><!-- /.container -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" data-cfasync="false"></script>
+<script>
+function calculateAge (birthDate, otherDate) {
+    birthDate = new Date(birthDate);
+    otherDate = new Date(otherDate);
+
+    var years = (otherDate.getFullYear() - birthDate.getFullYear());
+
+    if (otherDate.getMonth() < birthDate.getMonth() || 
+        otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+        years--;
+    }
+
+    return years;
+}
+
+window.addEventListener('load', function() {
+  let elements = [
+    { "name": "U15 Rockfest", "eligible_date": "06/30/2021", "max_age": 14, "min_age": 0 },
+    { "name": "U23 Invitational", "eligible_date": "06/30/2021", "max_age": 24, "min_age": 20 },
+    { "name": "2021-22 U18 National Championship", "eligible_date": "06/30/2021", "max_age": 17, "min_age": 0 },
+    { "name": "2021-22 U21 National Championship", "eligible_date": "06/30/2022", "max_age": 20, "min_age": 0 },
+    { "name": "2022 World Juniors Qualification", "eligible_date": "06/30/2021", "max_age": 20, "min_age": 0 },
+    { "name": "U25 Invitational", "eligible_date": "06/30/2022", "max_age": 25, "min_age": 0 },
+  ]
+
+  $('#birtdateField').datepicker({startDate: '-12y'});
+
+  $('#updateButton').click(function(){
+    var output = ""
+    var bday = $('#birtdateField').val();
+    for (let event of elements) {
+      age = calculateAge(bday, event["eligible_date"])
+      if (age >= event["min_age"] && age <= event["max_age"]) {
+        output += event["name"] + ": Yes\n"
+      } else {
+        output += event["name"] + ": No\n"
+      }
+    }
+    $("#scenario_config").val(output)
+  })
+});
+</script>
+
+</html>
