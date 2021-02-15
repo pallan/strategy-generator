@@ -40,24 +40,22 @@
 <main role="main" class="container-fluid">
   <div class="row">
     <div class="col-md">
-      <form id="configForm" name="configForm">
+      <form id="checkForm" name="checkForm">
         <div class="row">
           <div class="col">
             <div class="form-group">
               <label for="zone1">Birthday</label>
               <input type="text" id="birtdateField" name="birtdhate" class="form-control" value="" placeholder="mm/dd/yyy">
             </div>
-            <textarea class="form-control" id="scenario_config" rows="8"></textarea>
           </div>
         </div>
-        <p><button id="updateButton" type="button" class="btn btn-info">Update</button></p>
+        <p><button id="updateButton" type="submit" class="btn btn-info">Update</button></p>
       </form>
+      <textarea class="form-control" id="scenario_config" rows="8"></textarea>
     </div>
   </div>
 </main><!-- /.container -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" data-cfasync="false"></script>
 <script>
 function calculateAge (birthDate, otherDate) {
     birthDate = new Date(birthDate);
@@ -73,7 +71,7 @@ function calculateAge (birthDate, otherDate) {
     return years;
 }
 
-window.addEventListener('load', function() {
+const updateEligibility = function(){
   let elements = [
     { "name": "U15 Rockfest", "eligible_date": "06/30/2021", "max_age": 14, "min_age": 0 },
     { "name": "U23 Invitational", "eligible_date": "06/30/2021", "max_age": 24, "min_age": 20 },
@@ -83,21 +81,24 @@ window.addEventListener('load', function() {
     { "name": "U25 Invitational", "eligible_date": "06/30/2022", "max_age": 25, "min_age": 0 },
   ]
 
-  $('#birtdateField').datepicker({startDate: '-12y'});
-
-  $('#updateButton').click(function(){
-    var output = ""
-    var bday = $('#birtdateField').val();
-    for (let event of elements) {
-      age = calculateAge(bday, event["eligible_date"])
-      if (age >= event["min_age"] && age <= event["max_age"]) {
-        output += event["name"] + ": Yes\n"
-      } else {
-        output += event["name"] + ": No\n"
-      }
+  var output = ""
+  var bday = document.getElementById("birtdateField").value;
+  for (let event of elements) {
+    age = calculateAge(bday, event["eligible_date"])
+    if (age >= event["min_age"] && age <= event["max_age"]) {
+      output += event["name"] + ": Yes\n"
+    } else {
+      output += event["name"] + ": No\n"
     }
-    $("#scenario_config").val(output)
-  })
+  }
+  document.getElementById("scenario_config").value  = output;
+};
+
+window.addEventListener('load', function() {
+  document.getElementById('checkForm').addEventListener('submit', function(evt){
+    evt.preventDefault()
+    updateEligibility();
+  });
 });
 </script>
 
