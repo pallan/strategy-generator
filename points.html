@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MJCT Points</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      body {
+        padding-top: 5rem;
+      }
+      .starter-template {
+        padding: 3rem 1.5rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">MJCT Points Calculator</a>
+    </nav>
+
+<main role="main" class="container-fluid">
+  <div class="row">
+    <div class="col-md">
+      <form id="configForm" name="configForm">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="stoneColour1">Teams</label>
+              <select class="form-control" class="stone_colours" id="teamsSelect">
+                <option value="4" selected="selected">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="numOfEnds">Qualifiers</label>
+              <select class="form-control" id="qualifiersSelect" name="qualifiersSelect">
+                <option value="2" selected="selected">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md">
+      <ol id="pointsList">
+      </ol>
+    </div>
+  </div>
+<pre>
+
+let points = {
+  "2": {
+    "default": [60,40]
+  },
+  "3": {
+    "default": [50,32,18]
+  },
+  "4": {
+    6: [13.50,9,3.75,3.75],
+    7: [15.75,10.75,4.25,4.25],
+    8: [18,12,5,5],
+    10: [21,14,7.5,7.5],
+    "default": [50,30,10,10]
+  },
+  "6": {
+    12: [26.25,18.75,9.5,9.5,5.5,5.5],
+    15: [21,14,7.5,7.5,5,5],
+    "default": [30,20,15,15,10,10]
+  },
+  "8": {
+    18: [27,16,11,11,6.25,6.25,6.25,6.25],
+    "default": [30,18,12,12,7,7,7,7]
+  },
+  "10":{
+    18: [27,17,10,10,5,5,5,5,3,3],
+    "default": [30,18,11,11,6,6,6,6,3,3]
+   }
+};
+</pre>
+</main><!-- /.container -->
+
+<script src="https://kit.fontawesome.com/dd31b5e629.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+
+const updatePointsBreakdown = function(){
+  const points_per_team = 5;
+  const teams = document.getElementById('teamsSelect').value;
+  const qualifiers = document.getElementById('qualifiersSelect').value;
+  let total_points = teams * points_per_team;
+
+  if (points[qualifiers][teams]) {
+    breakdown = points[qualifiers][teams]
+  } else {
+    console.log("No override using default percentages")
+    breakdown = []
+    for (let i=0; i < points[qualifiers]["default"].length; i++) {
+      breakdown.push((points[qualifiers]["default"][i]/100)*total_points)
+    }
+  }
+
+  let pointsList = document.getElementById('pointsList')
+  while (pointsList.firstChild) {
+    pointsList.removeChild(pointsList.firstChild);
+  }
+
+  for (let pos of breakdown) {
+    var node = document.createElement('li');
+    node.appendChild(document.createTextNode(pos));
+
+    pointsList.appendChild(node);
+  }
+  console.log(breakdown)
+};
+
+window.addEventListener('load', function() {
+
+  document.getElementById('teamsSelect').addEventListener('change', function(evt){
+    console.log("Select the teams " + this.value)
+    updatePointsBreakdown()
+  });
+
+  document.getElementById('qualifiersSelect').addEventListener('change', function(evt){
+    console.log("Select the qualifiers " + this.value)
+    updatePointsBreakdown()
+  });
+
+});
+
+
+let points = {
+  "2": {
+    "default": [60,40]
+  },
+  "3": {
+    "default": [50,32,18]
+  },
+  "4": {
+    6: [13.50,9,3.75,3.75],
+    7: [15.75,10.75,4.25,4.25],
+    8: [18,12,5,5],
+    10: [21,14,7.5,7.5],
+    "default": [50,30,10,10]
+  },
+  "6": {
+    12: [26.25,18.75,9.5,9.5,5.5,5.5],
+    15: [21,14,7.5,7.5,5,5],
+    "default": [30,20,15,15,10,10]
+  },
+  "8": {
+    18: [27,16,11,11,6.25,6.25,6.25,6.25],
+    "default": [30,18,12,12,7,7,7,7]
+  },
+  "10":{
+    18: [27,17,10,10,5,5,5,5,3,3],
+    "default": [30,18,11,11,6,6,6,6,3,3]
+   }
+};
+
+</script>
+
+</html>
