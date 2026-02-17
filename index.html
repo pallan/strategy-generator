@@ -56,7 +56,28 @@
 <main role="main" class="container-fluid">
   <div class="row">
     <div class="col-md">
-        <canvas id="houseCanvas"></canvas>
+        <svg id="houseCanvas" viewBox="0 0 420 900" style="border:2px solid #000000; width:100%; max-width:420px;">
+          <!-- 12ft ring (blue) -->
+          <circle cx="210" cy="210" r="180" fill="blue" stroke="black" stroke-width="1"/>
+          <!-- 8ft ring (white) -->
+          <circle cx="210" cy="210" r="120" fill="white" stroke="black" stroke-width="1"/>
+          <!-- 4ft ring (red) -->
+          <circle cx="210" cy="210" r="60" fill="red" stroke="black" stroke-width="1"/>
+          <!-- Button (white) -->
+          <circle cx="210" cy="210" r="15" fill="white" stroke="black" stroke-width="1"/>
+          <!-- Centre/Tee line (horizontal) -->
+          <line x1="0" y1="210" x2="420" y2="210" stroke="black" stroke-width="1"/>
+          <!-- T-line (vertical centre) -->
+          <line x1="210" y1="30" x2="210" y2="900" stroke="black" stroke-width="1"/>
+          <!-- Back line -->
+          <line x1="0" y1="30" x2="420" y2="30" stroke="black" stroke-width="1"/>
+          <!-- Hog line -->
+          <line x1="0" y1="840" x2="420" y2="840" stroke="black" stroke-width="5"/>
+          <!-- Scenario description text -->
+          <text id="scenarioText" x="210" y="20" text-anchor="middle" font-size="14" font-family="sans-serif" fill="black"></text>
+          <!-- Dynamic stones -->
+          <g id="stones"></g>
+        </svg>
     </div>
     <div class="col-md">
       <h4>Scenario Management</h4>
