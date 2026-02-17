@@ -26,6 +26,6 @@
       ]
     }
   },
-  "forwardPorts": [5500],
+  "forwardPorts": [5501],
   "postCreateCommand": "bash .devcontainer/fix-claude-paths.sh && echo 'Open index.html with Live Server to start'"
 }
