@@ -271,7 +271,7 @@ const scenarioListItemNode = function(index, description) {
   const textnode = document.createTextNode(description);
   const node = document.createElement("button");
   node.setAttribute('type', 'button');
-  node.className = "list-group-item list-group-item-action";
+  node.className = "block w-full text-left px-4 py-3 text-sm text-gray-700 border-b border-gray-200 hover:bg-gray-50 cursor-pointer";
   node.setAttribute('data-index', index);
   node.appendChild(textnode);
   return node;
@@ -300,9 +300,9 @@ const loadSavedList = function() {
       listItem.addEventListener('click', function() {
         loadScenario(this.getAttribute('data-index'));
         for (const item of this.parentNode.children) {
-          item.classList.remove('active');
+          item.classList.remove('bg-indigo-50', 'text-indigo-700');
         }
-        this.classList.add('active');
+        this.classList.add('bg-indigo-50', 'text-indigo-700');
       });
     }
   }
