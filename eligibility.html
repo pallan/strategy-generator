@@ -2,139 +2,75 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Age-based eligibility checker for curling events and championships.">
     <title>Eligibility Calculator</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      body {
-        padding-top: 5rem;
-      }
-      .starter-template {
-        padding: 3rem 1.5rem;
-        text-align: center;
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
   </head>
-  <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Eligibility Calculator</a>
-    </nav>
+  <body class="bg-gray-50">
 
-<main role="main" class="container-fluid">
-  <div class="row">
-    <div class="col-md">
-      <form id="checkForm" name="checkForm">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="zone1">Birthday</label>
-              <input type="text" id="birtdateField" name="birtdhate" class="form-control" value="" placeholder="mm/dd/yyy">
+    <!-- Navbar -->
+    <nav class="relative bg-gray-800/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <div class="flex items-center">
+            <span class="text-lg font-bold text-white">Strategy Time</span>
+            <div class="hidden sm:ml-6 sm:block">
+              <div class="flex space-x-4">
+                <a href="index.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Generator</a>
+                <a href="eligibility.html" class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-white">Eligibility</a>
+              </div>
             </div>
           </div>
+          <div class="-mr-2 flex sm:hidden">
+            <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+              <span class="absolute -inset-0.5"></span>
+              <span class="sr-only">Open main menu</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <p><button id="updateButton" type="submit" class="btn btn-info">Update</button></p>
+      </div>
+      <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
+        <div class="space-y-1 px-2 pt-2 pb-3">
+          <a href="index.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Generator</a>
+          <a href="eligibility.html" class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Eligibility</a>
+        </div>
+      </el-disclosure>
+    </nav>
+
+    <main class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+      <h1 class="text-2xl font-bold text-gray-900 mb-6">Eligibility Calculator</h1>
+
+      <form id="checkForm" name="checkForm" class="space-y-4">
+        <div>
+          <label for="birthdateField" class="block text-sm/6 font-medium text-gray-900">Birthday</label>
+          <input type="date" id="birthdateField" name="birthdate" required class="mt-1 block w-full max-w-xs rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+        </div>
+        <div>
+          <button id="updateButton" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update</button>
+        </div>
       </form>
-      <table class="table table-striped">
+
+      <table class="mt-8 min-w-full">
         <thead>
-          <tr>
-            <th>Event</th>
-            <th>Eligible</th>
-            <th></th>
+          <tr class="border-b border-gray-300">
+            <th class="py-3 pr-4 text-left text-sm font-semibold text-gray-900">Event</th>
+            <th class="py-3 pr-4 text-left text-sm font-semibold text-gray-900">Eligible</th>
+            <th class="py-3 text-left text-sm font-semibold text-gray-900"></th>
           </tr>
         </thead>
-        <tbody id="event-list">
+        <tbody id="event-list" class="divide-y divide-gray-200">
         </tbody>
       </table>
-    </div>
-  </div>
-</main><!-- /.container -->
+    </main>
 
-<script src="https://kit.fontawesome.com/dd31b5e629.js" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script>
-function calculateAge (birthDate, otherDate) {
-    birthDate = new Date(birthDate);
-    otherDate = new Date(otherDate);
-
-    var years = (otherDate.getFullYear() - birthDate.getFullYear());
-
-    if (otherDate.getMonth() < birthDate.getMonth() ||
-        otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
-        years--;
-    }
-
-    return years;
-}
-
-const updateEligibility = function(){
-  let elements = [
-    { "name": "U15 Rockfest", "eligible_date": "06/30/2021", "groups": [{"max_age": 14, "min_age": 0}] },
-    { "name": "U23 Invitational", "eligible_date": "06/30/2021", "groups": [{"max_age": 24, "min_age": 20, "note": "Cumulative team age must be 88 years or less"}] },
-    { "name": "2021-22 U18 National Championship", "eligible_date": "06/30/2021", "groups": [{"max_age": 17, "min_age": 0}] },
-    { "name": "2021-22 U21 National Championship", "eligible_date": "06/30/2022", "groups":
-      [
-        {"max_age": 20, "min_age": 0},
-        {"max_age": 21, "min_age": 21, "note": "Eligible as an overage. One allowed per team."}
-      ]
-    },
-    { "name": "2022 World Juniors Qualification", "eligible_date": "06/30/2021", "groups": [{"max_age": 20, "min_age": 0}] },
-    { "name": "U25 Invitational", "eligible_date": "06/30/2022", "groups": [{"max_age": 25, "min_age": 0, "note": "Cumulative team age must be 96 years or less for four-person teams"}] },
-  ]
-
-  var tbl = document.getElementById("event-list");
-  tbl.innerHTML = "";
-  var bday = document.getElementById("birtdateField").value;
-  for (let event of elements) {
-    row = tbl.insertRow(0);
-    cell1 = row.insertCell(0);
-    cell2 = row.insertCell(1)
-    cell3 = row.insertCell(2);
-    cell1.innerHTML = event["name"];
-
-    age = calculateAge(bday, event["eligible_date"])
-    for (let group of event["groups"]) {
-      if (age >= group["min_age"] && age <= group["max_age"]) {
-        cell2.innerHTML = '<span style="color:green"><i class="fas fa-check"></i><span>';
-        if (typeof group["note"] !== 'undefined') {
-          cell3.innerHTML += "<small><em>"+group["note"]+"</em></small>";
-        }
-        break;
-      } else {
-        cell2.innerHTML = '<span style="color:red"><i class="fas fa-times"></i></span>';
-      }
-    }
-    if (cell2.innerHTML == "") {
-      cell2.innerHTML = '<span style="color:red"><i class="fas fa-times"></i></span>';
-    }
-  }
-};
-
-window.addEventListener('load', function() {
-  document.getElementById('checkForm').addEventListener('submit', function(evt){
-    evt.preventDefault()
-    updateEligibility();
-  });
-  $('[data-toggle="tooltip"]').tooltip()
-});
-</script>
-
+    <script src="js/eligibility.js"></script>
+  </body>
 </html>
