@@ -2,275 +2,279 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.5">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Curling strategy practice tool that generates randomized in-game scenarios for teams to discuss strategy.">
+    <meta name="author" content="Strategy Time">
     <title>Curling Strategy Generator</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      body {
-        padding-top: 5rem;
-      }
-      .starter-template {
-        padding: 3rem 1.5rem;
-        text-align: center;
-      }
-
-      li.load-saved {
-        cursor: pointer;
-      }
-
-      #houseCanvas { 
-        border:2px solid #000000;
-      }
-
-      #advanced-config { 
+      #advanced-config {
         display: none;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   </head>
-  <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Strategy Time</a>
+  <body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center">
+          <span class="text-lg font-bold text-white">Strategy Time</span>
+        </div>
+      </div>
     </nav>
 
-<main role="main" class="container-fluid">
-  <div class="row">
-    <div class="col-md">
-        <canvas id="houseCanvas"></canvas>
-    </div>
-    <div class="col-md">
-      <h4>Scenario Management</h4>
-      <form id="configForm" name="configForm">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="stoneColour1">Stone Colours</label>
-              <select class="form-control" class="stone_colours" id="stoneColours">
-                <option selected="selected">Red / Yellow</option>
-                <option>Blue / Green</option>
-                <option>Blue / Red</option>
-                <option>Blue / Yellow</option>
-                <option>Green / Red</option>
-                <option>Green / Yellow</option>
-              </select>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-group">
-              <label for="numOfEnds">No. of Ends</label>
-              <select class="form-control" id="numOfEnds" name="numOfEnds">
-                <option selected="selected">8</option>
-                <option>10</option>
-              </select>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-group">
-              <label for="minThrown">Min. Stones Thrown</label>
-              <select class="form-control" id="minThrown">
-                <option value="3" selected="selected">3 (Lead)</option>
-                <option value="4">4 (Lead)</option>
-                <option value="5">5 (Second)</option>
-                <option value="6">6 (Second)</option>
-                <option value="7">7 (Second)</option>
-                <option value="8">8 (Second)</option>
-                <option value="9">9 (Third)</option>
-                <option value="10">10 (Third)</option>
-                <option value="11">11 (Third)</option>
-                <option value="12">12 (Third)</option>
-                <option value="13">13 (Skip)</option>
-                <option value="14">14 (Skip)</option>
-                <option value="15">15 (Skip)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label for="currentEnd">Current End</label>
-            <select class="form-control" id="currentEnd" name="currentEnd">
-              <option value="" selected="selected">Random</option>
-              <option value="1st">1st</option>
-              <option value="2nd">2nd</option>
-              <option value="3rd">3rd</option>
-              <option value="4th">4th</option>
-              <option value="5th">5th</option>
-              <option value="6th">6th</option>
-              <option value="7th">7th</option>
-              <option value="8th">8th</option>
-              <option value="9th">9th</option>
-              <option value="10th">10th</option>
-            </select>
-          </div>
-        </div>
-        <p><a href="#" id="toggle-advanced">Advanced Configuation</a></p>
-        <div id="advanced-config">
-          <div class="row">
-            <div class="col">
-              <div class="form-group">
-                <label for="zone1">Zone 1 %</label>
-                <input type="text" class="zoneInput" name="zone1" class="form-control" value="8">
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label for="zone2">Zone 2 %</label>
-                <input type="text" class="zoneInput" name="zone2" class="form-control" value="22">
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label for="zone3">Zone 3 %</label>
-                <input type="text" class="zoneInput" name="zone3" class="form-control" value="40">
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label for="zone4">Zone 4 % </label>
-                <input type="text" class="zoneInput" name="zone4" class="form-control" value="30">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <textarea class="form-control" id="scenarioNotes" rows="4" placeholder="Describe what you would do here..."></textarea>
-        </div>
-        <p><button id="save-button" type="button" class="btn btn-info">Save</button> <button type="submit" class="btn btn-primary">Regenerate House</button></p>
-      </form>
-      <h4>Saved Scenarios</h4>
-      <div class="list-group" id="saved-scenario-list"></div>
-      <p><button type="button" id="clear-saved" class="btn btn-danger btn-sm">Clear</button></p>
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
 
-      <div style="display:none">
-        <form id="rawJSONConfigForm">
-          <div class="form-group">
-            <textarea class="form-control" id="scenario_config" rows="8"></textarea>
+        <!-- Column 1: SVG House -->
+        <div>
+          <svg id="houseCanvas" viewBox="0 0 420 900" class="w-full max-w-md border-2 border-black">
+            <!-- 12ft ring (blue) -->
+            <circle cx="210" cy="210" r="180" fill="blue" stroke="black" stroke-width="1"/>
+            <!-- 8ft ring (white) -->
+            <circle cx="210" cy="210" r="120" fill="white" stroke="black" stroke-width="1"/>
+            <!-- 4ft ring (red) -->
+            <circle cx="210" cy="210" r="60" fill="red" stroke="black" stroke-width="1"/>
+            <!-- Button (white) -->
+            <circle cx="210" cy="210" r="15" fill="white" stroke="black" stroke-width="1"/>
+            <!-- Centre/Tee line (horizontal) -->
+            <line x1="0" y1="210" x2="420" y2="210" stroke="black" stroke-width="1"/>
+            <!-- T-line (vertical centre) -->
+            <line x1="210" y1="30" x2="210" y2="900" stroke="black" stroke-width="1"/>
+            <!-- Back line -->
+            <line x1="0" y1="30" x2="420" y2="30" stroke="black" stroke-width="1"/>
+            <!-- Hog line -->
+            <line x1="0" y1="840" x2="420" y2="840" stroke="black" stroke-width="5"/>
+            <!-- Scenario description text -->
+            <text id="scenarioText" x="210" y="20" text-anchor="middle" font-size="14" font-family="sans-serif" fill="black" aria-live="polite"></text>
+            <!-- Dynamic stones -->
+            <g id="stones"></g>
+          </svg>
+        </div>
+
+        <!-- Column 2: Scenario Management -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Scenario Management</h2>
+          <form id="configForm" name="configForm" class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label for="stoneColours" class="block text-sm/6 font-medium text-gray-900">Stone Colours</label>
+                <div class="mt-1 grid grid-cols-1">
+                  <select id="stoneColours" name="stoneColours" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                    <option selected>Red / Yellow</option>
+                    <option>Blue / Green</option>
+                    <option>Blue / Red</option>
+                    <option>Blue / Yellow</option>
+                    <option>Green / Red</option>
+                    <option>Green / Yellow</option>
+                  </select>
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                    <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <label for="numOfEnds" class="block text-sm/6 font-medium text-gray-900">No. of Ends</label>
+                <div class="mt-1 grid grid-cols-1">
+                  <select id="numOfEnds" name="numOfEnds" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                    <option selected>8</option>
+                    <option>10</option>
+                  </select>
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                    <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <label for="minThrown" class="block text-sm/6 font-medium text-gray-900">Min. Stones Thrown</label>
+                <div class="mt-1 grid grid-cols-1">
+                  <select id="minThrown" name="minThrown" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                    <option value="3" selected>3 (Lead)</option>
+                    <option value="4">4 (Lead)</option>
+                    <option value="5">5 (Second)</option>
+                    <option value="6">6 (Second)</option>
+                    <option value="7">7 (Second)</option>
+                    <option value="8">8 (Second)</option>
+                    <option value="9">9 (Third)</option>
+                    <option value="10">10 (Third)</option>
+                    <option value="11">11 (Third)</option>
+                    <option value="12">12 (Third)</option>
+                    <option value="13">13 (Skip)</option>
+                    <option value="14">14 (Skip)</option>
+                    <option value="15">15 (Skip)</option>
+                  </select>
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                    <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="currentEnd" class="block text-sm/6 font-medium text-gray-900">Current End</label>
+              <div class="mt-1 grid grid-cols-1">
+                <select id="currentEnd" name="currentEnd" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                  <option value="" selected>Random</option>
+                  <option value="1st">1st</option>
+                  <option value="2nd">2nd</option>
+                  <option value="3rd">3rd</option>
+                  <option value="4th">4th</option>
+                  <option value="5th">5th</option>
+                  <option value="6th">6th</option>
+                  <option value="7th">7th</option>
+                  <option value="8th">8th</option>
+                  <option value="9th">9th</option>
+                  <option value="10th">10th</option>
+                </select>
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+
+            <p><a href="#" id="toggle-advanced" class="text-sm text-indigo-600 hover:text-indigo-500">Advanced Configuration</a></p>
+
+            <div id="advanced-config">
+              <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div>
+                  <label for="zone1" class="block text-sm/6 font-medium text-gray-900">Zone 1 %</label>
+                  <input type="number" class="zoneInput mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6" id="zone1" name="zone1" value="8" min="0" max="100">
+                </div>
+                <div>
+                  <label for="zone2" class="block text-sm/6 font-medium text-gray-900">Zone 2 %</label>
+                  <input type="number" class="zoneInput mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6" id="zone2" name="zone2" value="22" min="0" max="100">
+                </div>
+                <div>
+                  <label for="zone3" class="block text-sm/6 font-medium text-gray-900">Zone 3 %</label>
+                  <input type="number" class="zoneInput mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6" id="zone3" name="zone3" value="40" min="0" max="100">
+                </div>
+                <div>
+                  <label for="zone4" class="block text-sm/6 font-medium text-gray-900">Zone 4 %</label>
+                  <input type="number" class="zoneInput mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6" id="zone4" name="zone4" value="30" min="0" max="100">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="scenarioNotes" class="block text-sm/6 font-medium text-gray-900">Scenario Notes</label>
+              <textarea id="scenarioNotes" name="scenarioNotes" rows="4" placeholder="Describe what you would do here..." class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6"></textarea>
+            </div>
+
+            <div class="flex gap-3">
+              <button id="save-button" type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Save</button>
+              <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Regenerate House</button>
+            </div>
+          </form>
+
+          <h2 class="mt-8 text-lg font-semibold text-gray-900 mb-2">Saved Scenarios</h2>
+          <div id="saved-scenario-list" class="divide-y divide-gray-200 rounded-md border border-gray-200 bg-white"></div>
+          <div class="mt-2">
+            <button type="button" id="clear-saved" class="rounded-md bg-red-50 px-2.5 py-1.5 text-sm font-semibold text-red-600 shadow-xs hover:bg-red-100">Clear</button>
           </div>
-          <button type="submit" class="btn btn-primary">Manual Update</button>
-        </form>
+
+          <div style="display:none">
+            <form id="rawJSONConfigForm">
+              <textarea id="scenario_config" rows="8" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 sm:text-sm/6"></textarea>
+              <button type="submit" class="mt-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500">Manual Update</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Column 3: Info -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Welcome!</h2>
+
+          <p class="mt-2 text-sm text-gray-700">This page generates a curling house with stones in play to create in-game
+            scenarios for teams or skips to discuss their strategy for that end. When ready
+            to see a new scenario, click 'Regenerate House'.</p>
+
+          <h3 class="text-base font-semibold text-gray-900 mt-6">Saving Scenarios</h3>
+
+          <p class="mt-2 text-sm text-gray-700">If you like a scenario you can enter notes about it, for example how you or your team
+            would handle it, and click the 'Save' button. This will keep a copy of the scenario with
+            your notes in <strong>your current browser only</strong>. If you leave and return to the
+            site on the same computer and browser the saved scenarios will appear. If you use a different
+            browser, on your phone for example, the scenarios will likely not appear. You can remove
+            saved scenarios by clicking the 'Clear' button or clearing your browsing data.</p>
+
+          <h3 class="text-base font-semibold text-gray-900 mt-6">How it Works</h3>
+          <p class="mt-2 text-sm text-gray-700">Below are the details about how each part of a scenario is generated.</p>
+
+          <dl class="mt-4 space-y-4 text-sm">
+            <div>
+              <dt class="font-semibold text-gray-900">End</dt>
+              <dd class="text-gray-700">Randomly selected from 1st to 10th</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900">Stone Colour</dt>
+              <dd class="text-gray-700">Randomly selected from selected colours (check out Advanced Configuration)</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900">Position Throwing</dt>
+              <dd class="text-gray-700">Number of stones already thrown is randomly selected between 3 and 15 (see 'Min. Stones
+                Thrown' in the Advanced Configuration). The position is calculated based on this. For
+                example, if 11 stones have been thrown then the next stone is the twelfth or the team
+                with hammer third's second stone.</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900">Hammer</dt>
+              <dd class="text-gray-700">Based on stones already thrown. If the next stone to come is an odd stone, the team
+                does not have hammer. If the next stone to come is an even stone, the team has hammer.</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900">Score Differential</dt>
+              <dd class="text-gray-700">Randomly selected between 0 (tied) and 6. "Up" or "Down" is randomly selected
+                except for the first end when it's always tied.</dd>
+            </div>
+          </dl>
+
+          <h3 class="text-base font-semibold text-gray-900 mt-6">Stone Placement</h3>
+
+          <p class="mt-2 text-sm text-gray-700">The stones are placed in the play area randomly using a weighted distribution. The play
+            area has been divided into four 'zones' with each one being assigned a weight to affect
+            the probability that zone will be selected by the randomizer. The zones and default
+            probabilities are detailed below. The weights can be configured in the 'Advanced
+            Configuration' area.</p>
+
+          <table class="mt-4 min-w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-300">
+                <th class="py-2 pr-4 text-left font-semibold text-gray-900">Zone</th>
+                <th class="py-2 pr-4 text-left font-semibold text-gray-900">Location</th>
+                <th class="py-2 text-left font-semibold text-gray-900">Probability</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr>
+                <td class="py-2 pr-4 text-gray-700">1</td>
+                <td class="py-2 pr-4 text-gray-700">Hogline to 9ft past hogline</td>
+                <td class="py-2 text-gray-700">8%</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 text-gray-700">2</td>
+                <td class="py-2 pr-4 text-gray-700">9ft past Hogline to Top of House</td>
+                <td class="py-2 text-gray-700">22%</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 text-gray-700">3</td>
+                <td class="py-2 pr-4 text-gray-700">Top of House to T-Line</td>
+                <td class="py-2 text-gray-700">40%</td>
+              </tr>
+              <tr>
+                <td class="py-2 pr-4 text-gray-700">4</td>
+                <td class="py-2 pr-4 text-gray-700">T-Line to Back Line</td>
+                <td class="py-2 text-gray-700">30%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="mt-4 text-sm text-gray-700">Additionally to prevent all stones from being in play, the randomizer gives each stone
+            a 55% chance of staying in play. Stones that 'fail' this test are removed.</p>
+        </div>
       </div>
-    </div>
-    <div class="col-md">
-<h4>Welcome!</h4>
+    </main>
 
-<p>This page generates a curling house with stones in play to create in-game 
-  scenarios for teams or skips to discuss their strategy for that end. When ready
-to see a new scenario, click 'Regenerate House'.</p>
-
-<h5>Saving Scenarios</h5>
-
-<p>If you like a scenario you can enter notes about it, for example how you or your team
-  would handle it, and click the 'Save' button. This will keep a copy of the scenario with
-  your notes in <strong>your current browser only</strong>. If you leave and return to the 
-  site on the same computer and browser the saved scenarios will appear. If you use a different
-  browser, on your phone for example, the scenarios will likely not appear. You can remove 
-saved scenarios by clicking the 'Clear' button or clearing your browsing data.</p>
-
-
-<h5>How it Works</h5>
-<p>Below are the details about how each part of a scenario is generated.</p>
-
-<dl>
-  <dt>End</dt>
-  <dd>Randomly selected from 1st to 10th</dd>
-  <dt>Stone Colour</dt>
-  <dd>Randomly selected from selected colours (check out Advanced Configuration)</dd>
-  <dt>Position Throwing</dt>
-  <dd>Number of stones already thrown is randomly selected between 3 and 15 (see 'Min. Stones
-    Thrown' in the Advanced Configuration). The position is calculated based on this. For 
-    example, if 11 stones have been thrown then the next stone is the twelveth or the team 
-    with hammer third's second stone.
-  </dd>
-  <dt>Hammer</dt>
-  <dd>Based on stones already thrown. If the next stone to come is an odd stone, the team 
-    does not have hammer. If the next stone to come is an even stone, the tead has hammer.
-  </dd>
-  <dt>Score Differential</dt>
-  <dd>Randomly selected between 0 (tied) and 6. "Up" or "Down" is randomly selected
-    except for the first end when its always tied.
-  </dd>
-</dl>
-
-<h5>Stone Placement</h5>
-
-<p>The stones are placed in the play area randomly using a weighted distribution. The play 
-  area has been divided into four 'zones' with each one being assigned a weight to affect 
-  the probability that zone will be selected by the randomizer. The zones and default 
-  probabilities are detailed below. The weights can be configured in the 'Advanced 
-  Configuration' area.</p>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Zone</th>
-      <th>Location</th>
-      <th>Probabilty</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Hogline to 9ft past hogline</td>
-      <td>8%</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>9ft past Hogline to Top of House</td>
-      <td>22%</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Top of House to T-Line</td>
-      <td>40%</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>T-Line to Back Line</td>
-      <td>30%</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Additionally to prevent all stones from being in play, the randomizer gives each stone
-a 45% chance of staying in play. Stones that 'fail' this test are removed.</p>
-
-    </div>
-  </div>
-</main><!-- /.container -->
-
-<script src="js/app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
-<script>
-window.cookieconsent.initialise({
-  "palette": {
-    "popup": {
-      "background": "#000"
-    },
-    "button": {
-      "background": "#f1d600"
-    }
-  }
-});
-</script>
-
+    <script src="js/app.js"></script>
+  </body>
 </html>
