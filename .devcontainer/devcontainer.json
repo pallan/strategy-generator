@@ -7,14 +7,14 @@
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
-  },
-  "remoteEnv": {
-    "CLAUDE_CONFIG_DIR": "/home/node/.claude"
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "mounts": [
-    "source=/Users/pallan/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude/.credentials.json,target=/home/node/.claude/.credentials.json,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude/settings.json,target=/home/node/.claude/settings.json,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude/.claude.json,target=/home/node/.claude/.claude.json,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude/commands,target=/home/node/.claude/commands,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude/projects,target=/home/node/.claude/projects,type=bind,consistency=cached",
     "source=claude-code-history,target=/commandhistory,type=volume"
   ],
   "customizations": {
@@ -22,10 +22,11 @@
       "extensions": [
         "ritwickdey.LiveServer",
         "GitHub.copilot",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "anthropic.claude-code"
       ]
     }
   },
   "forwardPorts": [5501],
-  "postCreateCommand": "bash .devcontainer/fix-claude-paths.sh && echo 'Open index.html with Live Server to start'"
+  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && echo 'Open index.html with Live Server to start'"
 }
