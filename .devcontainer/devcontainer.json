@@ -26,5 +26,5 @@
   },
   "forwardPorts": [5501],
   "initializeCommand": "mkdir -p ~/.claude/commands ~/.claude/projects && touch ~/.claude/.credentials.json ~/.claude/settings.json ~/.claude/.claude.json",
-  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && echo 'Open index.html with Live Server to start'"
+  "postCreateCommand": "mkdir -p ~/.npm-global && npm config set prefix ~/.npm-global && npm install -g @anthropic-ai/claude-code && echo 'export PATH=$HOME/.npm-global/bin:$PATH' >> ~/.bashrc && echo 'Open index.html with Live Server to start'"
 }
