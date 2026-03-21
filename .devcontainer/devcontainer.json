@@ -28,5 +28,6 @@
     }
   },
   "forwardPorts": [5501],
+  "initializeCommand": "mkdir -p ~/.claude/commands ~/.claude/projects && touch ~/.claude/.credentials.json ~/.claude/settings.json ~/.claude/.claude.json",
   "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && echo 'Open index.html with Live Server to start'"
 }
