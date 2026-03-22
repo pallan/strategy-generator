@@ -27,6 +27,6 @@
     }
   },
   "forwardPorts": [5501],
-  "initializeCommand": "mkdir -p ~/.claude/commands ~/.claude/projects && touch ~/.claude/.credentials.json ~/.claude/settings.json",
+  "initializeCommand": "mkdir -p ~/.claude/commands ~/.claude/projects && touch ~/.claude/.credentials.json ~/.claude/settings.json && chmod 644 ~/.claude/.credentials.json",
   "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
