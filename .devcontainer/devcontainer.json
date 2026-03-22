@@ -10,11 +10,8 @@
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "mounts": [
-    "source=${localEnv:HOME}/.claude/.credentials.json,target=/home/node/.claude/.credentials.json,type=bind,consistency=cached",
-		"source=${localEnv:HOME}/.claude/.claude.json,target=/home/node/.claude/.claude.json,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude/settings.json,target=/home/node/.claude/settings.json,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude/commands,target=/home/node/.claude/commands,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude/projects,target=/home/node/.claude/projects,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=container-claude-plugins,target=/home/node/.claude/plugins,type=volume",
     "source=claude-code-history,target=/commandhistory,type=volume"
   ],
   "customizations": {
@@ -28,6 +25,6 @@
     }
   },
   "forwardPorts": [5501],
-  "initializeCommand": "mkdir -p ~/.claude/commands ~/.claude/projects && touch ~/.claude/.credentials.json ~/.claude/.claude.json ~/.claude/settings.json && chmod 644 ~/.claude/.credentials.json ~/.claude/.claude.json",
+  "initializeCommand": "mkdir -p ~/.claude",
   "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
