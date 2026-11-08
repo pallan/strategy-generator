@@ -66,6 +66,15 @@ test("loading a save with reversed colours selects a real dropdown option", () =
   assert.strictEqual(fields.stoneColours.value, "Red / Yellow");
 });
 
+test("the 2nd end score agrees with who has hammer", () => {
+  const { HouseScenario } = loadApp();
+  const house = new HouseScenario(30, "houseCanvas");
+  for (let i = 0; i < 200; i++) {
+    assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 15, "2nd").score_diff, /Up/);
+    assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 14, "2nd").score_diff, /Down/);
+  }
+});
+
 test("saved scenarios without a description are listed by their details", () => {
   const details = { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" };
   const { loadSavedList, list } = loadApp(JSON.stringify([{ details }]));

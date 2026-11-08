@@ -153,9 +153,7 @@ class HouseScenario {
       score_diff: ''
     };
 
-    if (conf.end === "2nd" && up_down === "Up" && conf.hammer) {
-      up_down = "Down";
-    }
+    if (conf.end === "2nd") up_down = conf.hammer ? "Down" : "Up";
     conf.score_diff = (score_diff === 0 || conf.end === '1st' ? 'Tied' : `${up_down} ${score_diff}`);
 
     return conf;
