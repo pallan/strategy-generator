@@ -16,7 +16,6 @@ const getRandomItem = function(list, weight) {
 
   for (let i = 0; i < list.length; i++) {
     weight_sum += weight[i];
-    weight_sum = +weight_sum.toFixed(2);
     if (random_num <= weight_sum) {
       return list[i];
     }
@@ -192,7 +191,6 @@ class HouseScenario {
       Array.prototype.forEach.call(zoneFields, function(element) {
         zones.push({ name: element.name, weight: (parseInt(element.value) || 0) / 100 });
       });
-      zones.sort((a, b) => (a.weight > b.weight) ? 1 : -1).reverse();
 
       const stones_thrown = getRandomInt(minStones, 15);
       this.scenarioConfig = {
