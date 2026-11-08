@@ -1,22 +1,20 @@
 # Strategy Generator
 
-A curling strategy practice tool that generates randomized in-game scenarios on an HTML5 Canvas. Players and teams can use it to discuss strategy for different game situations.
+A curling strategy practice tool that generates randomized in-game scenarios as an SVG drawing. Players and teams can use it to discuss strategy for different game situations.
 
 ## Features
 
-- **Strategy Generator** (`index.html`) — Renders a curling house on canvas with randomly placed stones and a randomized game scenario (end, score, hammer, throwing position). Scenarios can be saved and loaded from browser localStorage.
-- **Eligibility Calculator** (`eligibility.html`) — Age-based eligibility checker for curling events.
+- **Strategy Generator** (`index.html`) — Draws a curling house as SVG with randomly placed stones and a randomized game scenario (end, score, hammer, throwing position). Scenarios can be saved and loaded from browser localStorage.
 
 ## Getting Started
 
-This is a static site with no build step, no bundler, and no package manager. Open the HTML files directly in a browser or serve them with any static server (e.g., VS Code Live Server).
+This is a static site with no build step, no bundler, and no package manager. Open `index.html` directly in a browser or serve it with any static server (e.g., VS Code Live Server). Run the tests with `node --test`.
 
 ## Tech Stack
 
-- Vanilla JS (ES modules)
-- HTML5 Canvas
-- Bootstrap 4.3.1 (CDN)
-- jQuery (eligibility page)
+- Vanilla JS (ES6 classes)
+- SVG
+- TailwindCSS v4 (CDN)
 
 ## License
 
