@@ -6,7 +6,11 @@ const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
 
-const stubElement = () => ({ setAttribute() {}, appendChild() {}, addEventListener() {} });
+const stubElement = () => ({
+  setAttribute() {},
+  appendChild() {},
+  addEventListener(type, handler) { this[`on${type}`] = handler; },
+});
 
 const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
   const fields = {
@@ -18,7 +22,7 @@ const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
   };
   const list = { appended: [], appendChild(n) { this.appended.push(n); } };
   const byId = {
-    configForm: { elements: { namedItem: (name) => fields[name] } },
+    configForm: { ...stubElement(), elements: { namedItem: (name) => fields[name] } },
     "saved-scenario-list": list,
   };
   const document = {
@@ -28,14 +32,16 @@ const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
     createElement: () => ({ ...stubElement(), appendChild(n) { this.label = n.data; } }),
     createTextNode: (data) => ({ data: String(data) }),
   };
+  let stored = saved;
+  let onLoad;
   const context = vm.createContext({
     document,
-    window: { addEventListener() {} },
-    localStorage: { getItem: () => saved },
+    window: { addEventListener: (type, handler) => { onLoad = handler; } },
+    localStorage: { getItem: () => stored, setItem: (key, value) => { stored = value; } },
   });
   const source = fs.readFileSync(path.join(__dirname, "../js/app.js"), "utf8");
-  const app = vm.runInContext(`${source}\n;({ HouseScenario, loadSavedList })`, context);
-  return { ...app, fields, list };
+  const app = vm.runInContext(`${source}\n;({ HouseScenario, loadSavedList, loadScenario })`, context);
+  return { ...app, fields, list, byId, boot: () => onLoad(), stored: () => JSON.parse(stored) };
 };
 
 test("the team throwing an even-numbered stone has hammer", () => {
@@ -111,6 +117,23 @@ test("a chosen end is only used if the game has that end", () => {
   for (let i = 0; i < 100; i++) {
     assert.notStrictEqual(house.randomScenario(["Red", "Yellow"], "8", 15, "10th").end, "10th");
   }
+});
+
+test("notes survive a save and load, and can then be cleared", () => {
+  const app = loadApp();
+  app.boot();
+
+  app.fields.scenarioNotes.value = "Draw around the guard";
+  app.byId["save-button"].onclick();
+  assert.strictEqual(app.stored()[0].notes, "Draw around the guard");
+
+  app.fields.scenarioNotes.value = "";
+  app.loadScenario(0);
+  assert.strictEqual(app.fields.scenarioNotes.value, "Draw around the guard");
+
+  app.fields.scenarioNotes.value = "";
+  app.byId["save-button"].onclick();
+  assert.strictEqual(app.stored()[1].notes, "");
 });
 
 test("saved scenarios without a description are listed by their details", () => {
