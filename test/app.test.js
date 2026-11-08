@@ -8,7 +8,7 @@ const vm = require("node:vm");
 
 const stubElement = () => ({ setAttribute() {}, appendChild() {}, addEventListener() {} });
 
-const loadApp = (saved = null) => {
+const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
   const fields = {
     stoneColours: { options: [{ value: "Red / Yellow" }], selectedIndex: 0, value: "Red / Yellow" },
     minThrown: { options: [{ value: "3" }], selectedIndex: 0 },
@@ -23,7 +23,7 @@ const loadApp = (saved = null) => {
   };
   const document = {
     getElementById: (id) => (byId[id] ??= stubElement()),
-    getElementsByClassName: () => [{ name: "zone3", value: "100" }],
+    getElementsByClassName: () => zones,
     createElementNS: stubElement,
     createElement: () => ({ ...stubElement(), appendChild(n) { this.label = n.data; } }),
     createTextNode: (data) => ({ data: String(data) }),
@@ -73,6 +73,18 @@ test("the 2nd end score agrees with who has hammer", () => {
     assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 15, "2nd").score_diff, /Up/);
     assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 14, "2nd").score_diff, /Down/);
   }
+});
+
+test("loading a save restores zone percentages as whole numbers", () => {
+  const zones = [{ name: "zone3", value: "100" }];
+  const { HouseScenario } = loadApp(null, zones);
+  new HouseScenario(30, "houseCanvas").generate({
+    coordinates: [],
+    details: { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" },
+    stone_colours: ["Red", "Yellow"],
+    zone_weights: [{ name: "zone3", weight: 0.07 }],
+  });
+  assert.strictEqual(zones[0].value, 7);
 });
 
 test("saved scenarios without a description are listed by their details", () => {

@@ -184,7 +184,7 @@ class HouseScenario {
       for (const field of zoneFields) {
         for (let x = 0; x < this.scenarioConfig.zone_weights.length; x++) {
           if (field.name === this.scenarioConfig.zone_weights[x].name) {
-            field.value = this.scenarioConfig.zone_weights[x].weight * 100;
+            field.value = Math.round(this.scenarioConfig.zone_weights[x].weight * 100);
           }
         }
       }
