@@ -307,12 +307,6 @@ window.addEventListener('load', function() {
     advancedForm.style.display = advancedForm.style.display === "block" ? "none" : "block";
   });
 
-  document.getElementById('rawJSONConfigForm').addEventListener('submit', function(evt) {
-    evt.preventDefault();
-    const field = safeParseJSON(document.getElementById('scenario_config').value);
-    if (field) refreshHouse(field);
-  });
-
   document.getElementById('clear-saved').addEventListener('click', function() {
     if (confirm("Remove all saved scenarios? They cannot be recovered!")) {
       localStorage.removeItem("savedScenarios");
