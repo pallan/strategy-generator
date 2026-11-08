@@ -131,7 +131,7 @@ class HouseScenario {
     };
   }
 
-  scenarioToString(config) {
+  static scenarioToString(config) {
     const ends = config.numberOfEnds ? ` (${config.numberOfEnds} ends)` : '';
     return `${config.colour}, ${config.end} end ${config.hammer ? 'w/' : 'w/o '}hammer, ${config.thrower}, ${config.score_diff}${ends}`;
   }
@@ -147,7 +147,7 @@ class HouseScenario {
     const conf = {
       numberOfEnds: numberOfEnds,
       end: (currentEnd !== "" ? currentEnd : sample(labels, numberOfEnds)),
-      hammer: (stonesThrown % 2 === 0),
+      hammer: (stonesThrown % 2 === 1),
       colour: sample(colours),
       thrower: posIndex < positions.length ? positions[posIndex] : positions[positions.length - 1],
       score_diff: ''
@@ -181,7 +181,8 @@ class HouseScenario {
       if (this.debug) { console.log("Generating house using supplied config"); }
       this.scenarioConfig = config;
 
-      colourSelect.value = this.scenarioConfig.stone_colours.join(" / ");
+      // stone_colours is in throwing order; every dropdown option is alphabetical
+      colourSelect.value = [...this.scenarioConfig.stone_colours].sort().join(" / ");
       for (const field of zoneFields) {
         for (let x = 0; x < this.scenarioConfig.zone_weights.length; x++) {
           if (field.name === this.scenarioConfig.zone_weights[x].name) {
@@ -219,7 +220,7 @@ class HouseScenario {
 
       notes.value = '';
 
-      if (this.scenarioConfig.details.hammer && this.scenarioConfig.details.colour === this.scenarioConfig.stone_colours[0]) {
+      if (this.scenarioConfig.stone_colours[stones_thrown % 2] !== this.scenarioConfig.details.colour) {
         this.scenarioConfig.stone_colours.reverse();
       }
 
@@ -253,7 +254,7 @@ class HouseScenario {
     if (this.scenarioConfig.description) {
       this.drawScenarioText(this.scenarioConfig.description);
     } else {
-      this.drawScenarioText(this.scenarioToString(this.scenarioConfig.details));
+      this.drawScenarioText(HouseScenario.scenarioToString(this.scenarioConfig.details));
     }
 
     const dump = document.getElementById("scenario_config");
@@ -294,7 +295,7 @@ const loadSavedList = function() {
     const scenarios = safeParseJSON(localStorage.getItem("savedScenarios"));
     if (!Array.isArray(scenarios)) return;
     for (let x = 0; x < scenarios.length; x++) {
-      const listItem = scenarioListItemNode(x, scenarios[x].description);
+      const listItem = scenarioListItemNode(x, scenarios[x].description || HouseScenario.scenarioToString(scenarios[x].details));
       scenarioList.appendChild(listItem);
 
       listItem.addEventListener('click', function() {

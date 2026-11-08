@@ -23,7 +23,7 @@ This is a static site with no build step, no bundler, and no package manager. Se
 
 ## Development
 
-No build or test commands. Open HTML files directly in a browser or use Live Server.
+No build step. Open HTML files directly in a browser or use Live Server. Run tests with `node --test`.
 
 ## Tech Stack
 
