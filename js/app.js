@@ -340,7 +340,7 @@ window.addEventListener('load', function() {
     const configForm = document.getElementById("configForm");
     const notes = configForm.elements.namedItem('scenarioNotes');
 
-    if (notes.value) { field_value.notes = notes.value; }
+    field_value.notes = notes.value;
 
     let scenarios = safeParseJSON(localStorage.getItem("savedScenarios"));
     if (!Array.isArray(scenarios)) {
