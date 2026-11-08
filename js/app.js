@@ -202,7 +202,7 @@ class HouseScenario {
 
       const zones = [];
       Array.prototype.forEach.call(zoneFields, function(element) {
-        zones.push({ name: element.name, weight: parseInt(element.value) / 100 });
+        zones.push({ name: element.name, weight: (parseInt(element.value) || 0) / 100 });
       });
       zones.sort((a, b) => (a.weight > b.weight) ? 1 : -1).reverse();
 

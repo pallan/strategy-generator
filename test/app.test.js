@@ -87,6 +87,23 @@ test("loading a save restores zone percentages as whole numbers", () => {
   assert.strictEqual(zones[0].value, 7);
 });
 
+test("a blank zone is ignored instead of breaking the weighted pick", () => {
+  const { HouseScenario } = loadApp(null, [
+    { name: "zone2", value: "" },
+    { name: "zone3", value: "50" },
+    { name: "zone4", value: "50" },
+  ]);
+  const house = new HouseScenario(30, "houseCanvas");
+  const ys = [];
+  for (let i = 0; i < 100; i++) {
+    house.generate();
+    ys.push(...house.scenarioConfig.coordinates.map((stone) => stone.origin.y));
+  }
+  assert.ok(ys.some((y) => y < 210), "expected stones in zone 4");
+  assert.ok(ys.some((y) => y > 210), "expected stones in zone 3");
+  assert.ok(ys.every((y) => y <= 390), "expected no stones in the blank zone");
+});
+
 test("saved scenarios without a description are listed by their details", () => {
   const details = { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" };
   const { loadSavedList, list } = loadApp(JSON.stringify([{ details }]));
