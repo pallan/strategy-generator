@@ -20,7 +20,7 @@ const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
     currentEnd: { options: [{ value: "" }], selectedIndex: 0 },
     scenarioNotes: { value: "" },
   };
-  const list = { appended: [], appendChild(n) { this.appended.push(n); } };
+  const list = { appended: [], appendChild(n) { this.appended.push(n); }, replaceChildren() { this.appended = []; } };
   const byId = {
     configForm: { ...stubElement(), elements: { namedItem: (name) => fields[name] } },
     "saved-scenario-list": list,

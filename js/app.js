@@ -270,25 +270,21 @@ const loadScenario = function(index) {
 
 const loadSavedList = function() {
   const scenarioList = document.getElementById("saved-scenario-list");
-  while (scenarioList.firstChild) {
-    scenarioList.removeChild(scenarioList.firstChild);
-  }
+  scenarioList.replaceChildren();
 
-  if (localStorage.getItem("savedScenarios") !== null) {
-    const scenarios = safeParseJSON(localStorage.getItem("savedScenarios"));
-    if (!Array.isArray(scenarios)) return;
-    for (let x = 0; x < scenarios.length; x++) {
-      const listItem = scenarioListItemNode(x, scenarios[x].description || HouseScenario.scenarioToString(scenarios[x].details));
-      scenarioList.appendChild(listItem);
+  const scenarios = safeParseJSON(localStorage.getItem("savedScenarios"));
+  if (!Array.isArray(scenarios)) return;
+  for (let x = 0; x < scenarios.length; x++) {
+    const listItem = scenarioListItemNode(x, scenarios[x].description || HouseScenario.scenarioToString(scenarios[x].details));
+    scenarioList.appendChild(listItem);
 
-      listItem.addEventListener('click', function() {
-        loadScenario(this.getAttribute('data-index'));
-        for (const item of this.parentNode.children) {
-          item.classList.remove('bg-indigo-50', 'text-indigo-700');
-        }
-        this.classList.add('bg-indigo-50', 'text-indigo-700');
-      });
-    }
+    listItem.addEventListener('click', function() {
+      loadScenario(this.getAttribute('data-index'));
+      for (const item of this.parentNode.children) {
+        item.classList.remove('bg-indigo-50', 'text-indigo-700');
+      }
+      this.classList.add('bg-indigo-50', 'text-indigo-700');
+    });
   }
 };
 
