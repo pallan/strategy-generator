@@ -1,7 +1,6 @@
 "use strict";
 
 const sample = (a, range = null) => {
-  if (!Array.isArray(a)) return '';
   range = (range === null ? a.length : range);
   return a[Math.floor(Math.random() * range)];
 };
@@ -37,19 +36,11 @@ const safeParseJSON = function(str) {
 };
 
 class HouseScenario {
-  constructor(scale, svgId) {
-    this.debug = false;
+  constructor(scale) {
     this.scale = scale;
     this.stone_radius = scale * 0.48;
     this.width = scale * 14;
-    this.height = scale * 30;
-    this.scenarioConfig = {
-      coordinates: [],
-      description: "",
-      scale: scale,
-    };
 
-    this.svg = document.getElementById(svgId);
     this.stonesGroup = document.getElementById("stones");
     this.scenarioText = document.getElementById("scenarioText");
   }
@@ -176,7 +167,6 @@ class HouseScenario {
     const zoneFields = document.getElementsByClassName("zoneInput");
 
     if (config) {
-      if (this.debug) { console.log("Generating house using supplied config"); }
       this.scenarioConfig = config;
 
       // stone_colours is in throwing order; every dropdown option is alphabetical
@@ -191,8 +181,6 @@ class HouseScenario {
       notes.value = '';
       if (this.scenarioConfig.notes) notes.value = this.scenarioConfig.notes;
     } else {
-      if (this.debug) { console.log("Generating house using randomly generated config"); }
-
       const stone_colours = colourSelect.options[colourSelect.selectedIndex].value.split(" / ");
       const minStonesSelect = configForm.elements.namedItem('minThrown');
       const minStones = minStonesSelect.options[minStonesSelect.selectedIndex].value;
@@ -210,7 +198,6 @@ class HouseScenario {
       this.scenarioConfig = {
         coordinates: [],
         details: this.randomScenario(stone_colours, numberOfEnds, stones_thrown, currentEnd),
-        scale: this.scale,
         stone_colours: stone_colours,
         zone_weights: zones,
         notes: ''
@@ -261,7 +248,7 @@ class HouseScenario {
 }
 
 const refreshHouse = function(config = null) {
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   house.generate(config);
 };
 

@@ -46,14 +46,14 @@ const loadApp = (saved = null, zones = [{ name: "zone3", value: "100" }]) => {
 
 test("the team throwing an even-numbered stone has hammer", () => {
   const { HouseScenario } = loadApp();
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   assert.strictEqual(house.randomScenario(["Red", "Yellow"], 8, 15).hammer, true);
   assert.strictEqual(house.randomScenario(["Red", "Yellow"], 8, 14).hammer, false);
 });
 
 test("the named colour is the colour of the next stone", () => {
   const { HouseScenario } = loadApp();
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   for (let i = 0; i < 200; i++) {
     house.generate();
     const { details, stone_colours } = house.scenarioConfig;
@@ -63,7 +63,7 @@ test("the named colour is the colour of the next stone", () => {
 
 test("loading a save with reversed colours selects a real dropdown option", () => {
   const { HouseScenario, fields } = loadApp();
-  new HouseScenario(30, "houseCanvas").generate({
+  new HouseScenario(30).generate({
     coordinates: [],
     details: { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" },
     stone_colours: ["Yellow", "Red"],
@@ -74,7 +74,7 @@ test("loading a save with reversed colours selects a real dropdown option", () =
 
 test("the 2nd end score agrees with who has hammer", () => {
   const { HouseScenario } = loadApp();
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   for (let i = 0; i < 200; i++) {
     assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 15, "2nd").score_diff, /Up/);
     assert.doesNotMatch(house.randomScenario(["Red", "Yellow"], 8, 14, "2nd").score_diff, /Down/);
@@ -84,7 +84,7 @@ test("the 2nd end score agrees with who has hammer", () => {
 test("loading a save restores zone percentages as whole numbers", () => {
   const zones = [{ name: "zone3", value: "100" }];
   const { HouseScenario } = loadApp(null, zones);
-  new HouseScenario(30, "houseCanvas").generate({
+  new HouseScenario(30).generate({
     coordinates: [],
     details: { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" },
     stone_colours: ["Red", "Yellow"],
@@ -99,7 +99,7 @@ test("a blank zone is ignored instead of breaking the weighted pick", () => {
     { name: "zone3", value: "50" },
     { name: "zone4", value: "50" },
   ]);
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   const ys = [];
   for (let i = 0; i < 100; i++) {
     house.generate();
@@ -112,7 +112,7 @@ test("a blank zone is ignored instead of breaking the weighted pick", () => {
 
 test("a chosen end is only used if the game has that end", () => {
   const { HouseScenario } = loadApp();
-  const house = new HouseScenario(30, "houseCanvas");
+  const house = new HouseScenario(30);
   assert.strictEqual(house.randomScenario(["Red", "Yellow"], "8", 15, "8th").end, "8th");
   for (let i = 0; i < 100; i++) {
     assert.notStrictEqual(house.randomScenario(["Red", "Yellow"], "8", 15, "10th").end, "10th");
