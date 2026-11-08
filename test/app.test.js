@@ -104,6 +104,15 @@ test("a blank zone is ignored instead of breaking the weighted pick", () => {
   assert.ok(ys.every((y) => y <= 390), "expected no stones in the blank zone");
 });
 
+test("a chosen end is only used if the game has that end", () => {
+  const { HouseScenario } = loadApp();
+  const house = new HouseScenario(30, "houseCanvas");
+  assert.strictEqual(house.randomScenario(["Red", "Yellow"], "8", 15, "8th").end, "8th");
+  for (let i = 0; i < 100; i++) {
+    assert.notStrictEqual(house.randomScenario(["Red", "Yellow"], "8", 15, "10th").end, "10th");
+  }
+});
+
 test("saved scenarios without a description are listed by their details", () => {
   const details = { colour: "Red", end: "3rd", hammer: true, thrower: "Skip's last", score_diff: "Tied" };
   const { loadSavedList, list } = loadApp(JSON.stringify([{ details }]));

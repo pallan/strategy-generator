@@ -146,7 +146,7 @@ class HouseScenario {
     const posIndex = Math.ceil(nextStone / 2) - 1;
     const conf = {
       numberOfEnds: numberOfEnds,
-      end: (currentEnd !== "" ? currentEnd : sample(labels, numberOfEnds)),
+      end: (currentEnd !== "" && labels.indexOf(currentEnd) < numberOfEnds ? currentEnd : sample(labels, numberOfEnds)),
       hammer: (stonesThrown % 2 === 1),
       colour: sample(colours),
       thrower: posIndex < positions.length ? positions[posIndex] : positions[positions.length - 1],
